@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Util - eac.js</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Util";
+    var mkdocs_page_input_path = "API/util.md";
+    var mkdocs_page_url = "/API/util/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> eac.js</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../Executing_Tut/">Executing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">API</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../">API Documentation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../constants/">Constants</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../requestFactory/">Request Factory</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../requestTracker/">Request Tracker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../scheduler/">Scheduler</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../txRequest/">Transaction Request</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Util</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#eacutil">eac.Util</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#eacutilcalcendowmentcallgas-callvalue-gasprice-donation-payment">eac.Util.calcEndowment(callGas, callValue, gasPrice, donation, payment)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilchecknotnulladdressaddress">eac.Util.checkNotNullAddress(address)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilcheckvalidaddressaddress">eac.Util.checkValidAddress(address)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilestimategasopts">eac.Util.estimateGas(opts)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgetbalanceaddress">eac.Util.getBalance(address)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgetblocknumber">eac.Util.getBlockNumber()</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgetgasprice">eac.Util.getGasPrice()</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgettimestamp">eac.Util.getTimestamp()</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgettimestampforblockblocknum">eac.Util.getTimestampForBlock(blockNum)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacutilgettxrequestfromreceiptreceipt">eac.Util.getTxRequestFromReceipt(receipt)</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../GUI_Implementer_Guide/">GUI Implementer Guide</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../Changelog/">Changelog</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">eac.js</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+    
+    <li>Util</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="eacutil">eac.Util</h2>
+<p>Provides convenience and utility functions for working with web3
+and the Ethereum Alarm Clock contracts. The nice part about this module 
+is that it uses the same web3 object provided during the initiation
+of <code>eac.js</code> and provides Promise wrappers over Web3 callbacks.</p>
+<h3 id="eacutilcalcendowmentcallgas-callvalue-gasprice-donation-payment">eac.Util.calcEndowment(callGas, callValue, gasPrice, donation, payment)</h3>
+<p>Takes in <code>String|Number|BigNumber</code> arguments for <code>callGas</code>, <code>callValue</code>,
+<code>gasPrice</code>, <code>donation</code> and <code>payment</code> variables of a to-be scheduled
+transaction and returns a <code>BigNumber</code> of the required endowment to be
+sent to successful send the scheduling transaction.</p>
+<p><em>See <a href="../scheduler">here</a> under <code>eac.Scheduler.blockSchedule()</code> for an example</em></p>
+<h3 id="eacutilchecknotnulladdressaddress">eac.Util.checkNotNullAddress(address)</h3>
+<p>Returns <code>true</code> if the address is not equal to the NULL_ADDRESS (0x0...0)
+and <code>false</code> if the address is the NULL_ADDRESS.</p>
+<h3 id="eacutilcheckvalidaddressaddress">eac.Util.checkValidAddress(address)</h3>
+<p>Similar to <code>.checkNotNullAddress()</code> but performs a checksum validation 
+as well to make the address is valid. Returns <code>true</code> if it passes and
+<code>false</code> if validation fails.</p>
+<h3 id="eacutilestimategasopts">eac.Util.estimateGas(opts)</h3>
+<p>Takes <code>opts</code> variable being the options to an Ethereum transaction in JSON
+form. EX.</p>
+<pre><code>{
+    from: web3.eth.defaultAccount,
+    to: requestFactory.address,
+    data: 0xF620Abcc...
+}
+</code></pre>
+
+<p>and returns a <code>Promise</code> that will resolve to the estimated gas cost of
+the transaction or reject with an error.</p>
+<h3 id="eacutilgetbalanceaddress">eac.Util.getBalance(address)</h3>
+<p>Takes a valid Ethereum <code>address</code> and returns a <code>Promise</code> that will resolve
+to a <code>BigNumber</code> of the balance of that address in wei.</p>
+<h3 id="eacutilgetblocknumber">eac.Util.getBlockNumber()</h3>
+<p>Returns a <code>Promise</code> that resolves to the latest block number.</p>
+<h3 id="eacutilgetgasprice">eac.Util.getGasPrice()</h3>
+<p>Returns a <code>Promise</code> that resolves to the latest average estimated
+gas price.</p>
+<h3 id="eacutilgettimestamp">eac.Util.getTimestamp()</h3>
+<p>Returns a <code>Promise</code> that resolves to the timestamp of the latest
+block.</p>
+<h3 id="eacutilgettimestampforblockblocknum">eac.Util.getTimestampForBlock(blockNum)</h3>
+<p>Takes a block number <code>blockNum</code> and returns a <code>Promise</code> that will resolve
+to the timestamp of that block or reject the error.</p>
+<h3 id="eacutilgettxrequestfromreceiptreceipt">eac.Util.getTxRequestFromReceipt(receipt)</h3>
+<p>Takes the <code>receipt</code> from a <code>eac.Scheduler.schedule()</code> transaction and
+pulls out the address of the transaction request that was scheduled in
+that scheduling transaction.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../GUI_Implementer_Guide/" class="btn btn-neutral float-right" title="GUI Implementer Guide">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../txRequest/" class="btn btn-neutral" title="Transaction Request"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../txRequest/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../GUI_Implementer_Guide/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>

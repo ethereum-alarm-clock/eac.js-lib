@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Request Factory - eac.js</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Request Factory";
+    var mkdocs_page_input_path = "API/requestFactory.md";
+    var mkdocs_page_url = "/API/requestFactory/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> eac.js</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../Executing_Tut/">Executing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">API</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../">API Documentation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../constants/">Constants</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Request Factory</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#eacrequestfactory">eac.RequestFactory</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#constructor">Constructor</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygettrackeraddress">eac.RequestFactory.getTrackerAddress()</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactoryisknownrequestrequestaddr">eac.RequestFactory.isKnownRequest(requestAddr)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactoryvalidaterequestparamsaddressargs-uintargs-calldata-endowment">eac.RequestFactory.validateRequestParams(addressArgs, uintArgs, callData, endowment)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestcreatedlogsfilterstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(filter[,startBlock[, endBlock]])</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</a></li>
+        
+            <li><a class="toctree-l4" href="#eacrequestfactorygetrequestsbyownerowner-startblock-endblock">eac.RequestFactory.getRequestsByOwner(owner[, startBlock[, endBlock])</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../requestTracker/">Request Tracker</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../scheduler/">Scheduler</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../txRequest/">Transaction Request</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../util/">Util</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../GUI_Implementer_Guide/">GUI Implementer Guide</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../Changelog/">Changelog</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">eac.js</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+    
+    <li>Request Factory</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="eacrequestfactory">eac.RequestFactory</h2>
+<p>Exposes utilities for interacting with the Request Factory contract.</p>
+<h3 id="constructor">Constructor</h3>
+<p>Returns a <code>Promise</code> that resolves a new instance of a <code>eac.RequestFactory</code>
+class. Uses the canonical Ethereum Alarm Clock contracts for the same 
+chain as the Web3 object was initiated on.</p>
+<pre><code class="javascript">// Inside of an async function:
+const requestFactory = await eac.requestFactory()
+</code></pre>
+
+<h3 id="eacrequestfactorygettrackeraddress">eac.RequestFactory.getTrackerAddress()</h3>
+<p>Returns the <code>address</code> of the tracker that the request factory is using
+to track new transaction requests. </p>
+<pre><code class="javascript">const trackerAddr = requestFactory.getTrackerAddress()
+</code></pre>
+
+<h3 id="eacrequestfactoryisknownrequestrequestaddr">eac.RequestFactory.isKnownRequest(requestAddr)</h3>
+<p>Takes a <code>TxRequest</code> address and returns a <code>Promise</code> that will resolve <code>true</code> if the 
+transaction request is registed with the factory and <code>false</code> if it's not. 
+This function is used by clients to verify that the address was registered through
+the watched contracts.</p>
+<pre><code class="javascript">// Verify that the request is known to the factory we are validating with.
+if (!await requestFactory.isKnownRequest(nextRequestAddress)) {
+    throw new Error(`Encountered unknown address! Please check that you are using the correct contracts JSON file.`)
+}
+</code></pre>
+
+<h3 id="eacrequestfactoryvalidaterequestparamsaddressargs-uintargs-calldata-endowment">eac.RequestFactory.validateRequestParams(addressArgs, uintArgs, callData, endowment)</h3>
+<p>Lowest level validation function and takes the full request params</p>
+<ul>
+<li>addressArgs [0] -  meta.owner</li>
+<li>addressArgs [1] -  paymentData.donationBenefactor</li>
+<li>addressArgs [2] -  txnData.toAddress</li>
+<li>uintArgs [0]    -  paymentData.donation</li>
+<li>uintArgs [1]    -  paymentData.payment</li>
+<li>uintArgs [2]    -  schedule.claimWindowSize</li>
+<li>uintArgs [3]    -  schedule.freezePeriod</li>
+<li>uintArgs [4]    -  schedule.reservedWindowSize</li>
+<li>uintArgs [5]    -  schedule.temporalUnit</li>
+<li>uintArgs [6]    -  schedule.windowSize</li>
+<li>uintArgs [7]    -  schedule.windowStart</li>
+<li>uintArgs [8]    -  txnData.callGas</li>
+<li>uintArgs [9]    -  txnData.callValue</li>
+<li>uintArgs [10]   -  txnData.gasPrice</li>
+<li>uintArgs [11]   -  claimData.requiredDeposit</li>
+<li>callData        -  The call data</li>
+<li>endowment       -  The value sent with the creation request.</li>
+</ul>
+<p>where <code>addressArgs</code> is an array of length 3 containing valid Ethereum addresses, <code>uintArgs</code>
+is an array of length 12 containing unsigned integers, the <code>callData</code> is hex 
+encoded and the <code>endowment</code> is a wei value. Returns an <code>Array&lt;boolean&gt;</code> of length 6,
+the booleans will be true if validation passed and false if an error was triggered.
+Use <code>eac.RequestFactroy.parseIsValid()</code> to parse error messages from this array.</p>
+<h3 id="eacrequestfactoryparseisvalidisvalid">eac.RequestFactory.parseIsValid(isValid)</h3>
+<p>Takes an <code>Array&lt;boolean&gt;</code> of length six containing the results of <code>.validateRequestParams()</code>
+and returns an <code>Array&lt;string&gt;</code> containig the parsed error messages.</p>
+<p>Error messages include:
+ * InsufficientEndowment
+ * ReservedWindowBiggerThanExecutionWindow
+ * InvalidTemporalUnit
+ * ExecutionWindowTooSoon
+ * CallGasTooHigh
+ * EmptyToAddress</p>
+<pre><code class="javascript">// Defines the variables addressArgs, uintArgs, callData and endowment earlier in the file
+const isValid = await requestFactory.validateRequestParams(
+    addressArgs,
+    uintArgs,
+    callData,
+    endowment
+)
+
+if (isValid.indexOf(false) != -1) {
+    const errorMsgs = requestFactory.parseIsValid(isValid)
+    throw new Error(errorMsgs)
+}
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestcreatedlogsfilterstartblock-endblock">eac.RequestFactory.getRequestCreatedLogs(filter[,startBlock[, endBlock]])</h3>
+<p>Takes a <code>number</code> <code>startBlock</code> and optional <code>number</code> <code>endBlock</code> and returns
+the raw logs for the requests created through the request factory between
+these block times. If <code>endBlock</code> is not provided it will return all logs 
+up until the <code>latest</code> block. Returns a <code>Promise</code> that resolves to an array
+of the logs.</p>
+<pre><code class="javascript">const logs = await requestFactory.getRequestCreatedLogs(5665000)
+console.log(logs)
+
+// [ { address: '0x209270d49a3673e8d6163849fa0539800cfeeb9c',
+//     blockHash: '0x94c1a6f26a765e47e72e77ce60d8c7ac4cb9dc5858e54bd04fffbc7ec4ce838e',
+//     blockNumber: 5665267,
+//     logIndex: 1,
+//     transactionHash: '0x1dfbd5f4e249fb211e9d4a0b47de54ea0380fc703773b0c393342de123be3d31',
+//     transactionIndex: 1,
+//     transactionLogIndex: '0x0',
+//     type: 'mined',
+//     event: 'RequestCreated',
+//     args: { request: '0x720704a706d8d6b01167d3a5723c1fa50b1aec28',
+//             owner: '0x92cb33fe17a75f0088a14c7718a29321fba026cd' } 
+// } ]
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestsstartblock-endblock">eac.RequestFactory.getRequests(startBlock[, endBlock])</h3>
+<p>Similar to the previous function but returns an array of only the
+addresses of each transaction request. If not <code>starBlock</code> or <code>endBlock</code>
+is provided,  will use <code>current block - 5000</code> for startBlock and <code>latest</code>
+for endBlock.</p>
+<pre><code class="javascript">const txRequests = await requestFactory.getRequests(5665000)
+console.log(txRequests)
+
+// [ '0x720704a706d8d6b01167d3a5723c1fa50b1aec28' ]
+</code></pre>
+
+<h3 id="eacrequestfactorygetrequestsbyownerowner-startblock-endblock">eac.RequestFactory.getRequestsByOwner(owner[, startBlock[, endBlock])</h3>
+<p>Takes required argument <code>owner</code> which is a valid ethereum address
+and optional parameters <code>startBlock</code> and <code>endBlock</code>. If <code>startBlock</code> or
+<code>endBlock</code> are not provided uses the same defaults as <code>this.getRequests()</code>. Returns a <code>Promise</code> which resolves to an array of transaction requests
+addresses which are "owned" (created by) the passed in address. If the 
+<code>owner</code> address has not created any transaction requests then it will
+return an empty array.</p>
+<pre><code class="javascript">const owner = &quot;0x92cb33fe17a75f0088a14c7718a29321fba026cd&quot;
+const txRequests = await requestFactory.getRequestsByOwner(owner)
+
+console.log(txRequests)
+// [ '0xe8cf252bed6c94d7119d0154d9318aa03c6ff38c' ]
+
+// Then you can use it
+const myRequest = await eac.transactionRequest(txRequests[0])
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../requestTracker/" class="btn btn-neutral float-right" title="Request Tracker">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../constants/" class="btn btn-neutral" title="Constants"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../constants/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../requestTracker/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>
