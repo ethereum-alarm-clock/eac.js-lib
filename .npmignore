@@ -1,0 +1,8 @@
+test/
+lib/build/contracts/
+example/
+docs/
+deploy.js
+extractABI.js
+mkdocs.yml
+.vscode/
