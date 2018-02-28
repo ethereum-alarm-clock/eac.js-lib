@@ -78,6 +78,13 @@ describe("Request Tracker", () => {
 		expect(txRequest.address).to.exist
 		expect(txRequest.windowStart.toNumber()).to.equal(resWS.toNumber())
 
+		//try to find the same txRequest looking from right
+		const right = (await eac.Util.getBlockNumber()) + 10
+		const resR = await requestTracker.previousFromRight(right)
+		const resRWS = await requestTracker.windowStartFor(resR)
+
+		expect(resWS.toNumber()).to.be.equal(resRWS.toNumber())
+
 		// Depending on the tests, further txRequests may be registered.
 		const res2 = await requestTracker.nextRequest(res)
 		const res2WS = await requestTracker.windowStartFor(res2)
@@ -91,6 +98,11 @@ describe("Request Tracker", () => {
 				txRequest.windowStart.toNumber()
 			)
 		}
+
+		const res2prev = await requestTracker.previousRequest(res2)
+		const res2prevWS = await requestTracker.windowStartFor(res2prev)
+
+		expect(res2prevWS.toNumber()).to.be.equal(resWS.toNumber())
 
 		const res3 = await requestTracker.nextRequest(res2)
 		const res3WS = await requestTracker.windowStartFor(res3)
