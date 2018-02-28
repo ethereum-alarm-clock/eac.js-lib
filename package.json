@@ -1,6 +1,6 @@
 {
   "name": "eac.js-lib",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Javascript library for interacting with the Ethereum Alarm Clock contracts",
   "main": "index.js",
   "scripts": {
