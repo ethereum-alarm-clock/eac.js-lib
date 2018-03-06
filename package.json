@@ -4,7 +4,7 @@
   "description": "Javascript library for interacting with the Ethereum Alarm Clock contracts",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec && rm -f ./src/assets/tester.json",
+    "test": "mocha",
     "citest": "./scripts/citest.sh"
   },
   "repository": {
