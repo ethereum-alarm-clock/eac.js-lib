@@ -248,8 +248,8 @@ describe("Request Factory", () => {
                     expect(request).to.equal(ownerRequest);
                     compared = true;
                 }
-                // const stopped = await requestFactory.stopWatch(test1);
-                // expect(stopped).to.equal(true);
+                const stopped = await requestFactory.stopWatch(test1);
+                expect(stopped).to.equal(true);
             }
         );
 
@@ -260,8 +260,8 @@ describe("Request Factory", () => {
         );
 
         setTimeout(async () => {
-            const stopped = await requestFactory.stopWatch(test1);
+            const stopped = await requestFactory.stopWatch(test2);
             expect(stopped).to.equal(true);
-        },1000);
+        },900);
     })
 })
