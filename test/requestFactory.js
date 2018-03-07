@@ -210,4 +210,58 @@ describe("Request Factory", () => {
         const test2 = await requestFactory.getRequestsByOwner("0x92cb33fe17a75f0088a14c7718a29321fba026cd")
         expect(test2.length).to.equal(0)
     })
+
+    it("Tests watching logs", async () => {
+        let owner, ownerRequest;
+        const requestFactory = await eac.requestFactory()
+        expect(requestFactory.address).to.exist
+
+        // Test watchRequestCreatedLogs with no args
+        let event;
+        event = await requestFactory.watchRequestCreatedLogs({},null,
+            async (error,log) => {
+                if (!owner){
+                    owner = log.args.owner;
+                }
+                expect(log).to.not.equal(null);
+                const stopped = await requestFactory.stopWatch(event);
+                expect(stopped).to.equal(true);
+            }
+        );
+
+        let requests;
+        requests = await requestFactory.watchRequests(null,
+            async (request) => {
+                if (!ownerRequest){
+                    ownerRequest = request;
+                }
+                expect(request.length).to.equal(42);
+                const stopped = await requestFactory.stopWatch(requests);
+                expect(stopped).to.equal(true);
+            }
+        );
+
+        let test1,compared;
+        test1 = await requestFactory.watchRequestsByOwner(owner, null,
+            async (request) => {
+                if (!compared) {
+                    expect(request).to.equal(ownerRequest);
+                    compared = true;
+                }
+                // const stopped = await requestFactory.stopWatch(test1);
+                // expect(stopped).to.equal(true);
+            }
+        );
+
+        const test2 = await requestFactory.watchRequestsByOwner("0x92cb33fe17a75f0088a14c7718a29321fba026cd", null,
+            async (request) => {
+                    expect(request).to.not.exist;
+            }
+        );
+
+        setTimeout(async () => {
+            const stopped = await requestFactory.stopWatch(test1);
+            expect(stopped).to.equal(true);
+        },1000);
+    })
 })
