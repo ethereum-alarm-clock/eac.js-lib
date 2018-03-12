@@ -109,9 +109,9 @@ describe("TxRequest", () => {
 		// 	10,
 		// 	freezeStart
 		// )
-		console.log(await eac.Util.getBlockNumber(),
-			(await txRequest.now()).toNumber()
-		)
+		// console.log(await eac.Util.getBlockNumber(),
+		// 	(await txRequest.now()).toNumber()
+		// )
 		// expect(await txRequest.beforeClaimWindow()).to.be.false
 		// expect(await txRequest.inClaimWindow()).to.be.false
 		// expect(await txRequest.inFreezePeriod()).to.be.true
