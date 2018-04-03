@@ -12,6 +12,10 @@ This is a part of eac.js family that includes
 
 Eac.js-lib is the collection of lightweight helpers and wrappers for the Ethereum Alarm Clock protocol.  
 
+## Documentation
+
+[Documentation is available!](https://ethereum-alarm-clock.github.io/eac.js-lib/)
+
 ## Testing
 
 Install mocha `npm i -g mocha` and `mocha` at the root of the directory to run the test script on an isolated virtual blockchain using mocha. 
