@@ -2,7 +2,6 @@
 
 const Constants = require("./lib/constants")
 const RequestFactory = require("./lib/requestFactory")
-const RequestTracker = require("./lib/requestTracker")
 const Scheduler = require("./lib/scheduling")
 const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
@@ -12,7 +11,6 @@ module.exports = (web3) => {
     return {
       Constants,
       RequestFactory,
-      RequestTracker,
       Scheduler,
       TxRequest,
       Util: Util(),
@@ -26,15 +24,6 @@ module.exports = (web3) => {
       const chainName = await util.getChainName()
       const contracts = require(`./lib/assets/${chainName}.json`)
       return new RequestFactory(contracts.requestFactory, web3)
-    },
-    requestTracker: async () => {
-      const chainName = await util.getChainName()
-      const contracts = require(`./lib/assets/${chainName}.json`)
-      return new RequestTracker(
-        contracts.requestTracker,
-        contracts.requestFactory,
-        web3
-      )
     },
     scheduler: async () => {
       const chainName = await util.getChainName()
