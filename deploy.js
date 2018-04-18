@@ -30,7 +30,6 @@ async function main() {
     const BlockScheduler        = getArtifact('BlockScheduler')
     const ClaimLib              = getArtifact('ClaimLib')
     const ExecutionLib          = getArtifact('ExecutionLib')
-    const GroveLib              = getArtifact('GroveLib')
     const IterTools             = getArtifact('IterTools')
     const MathLib               = getArtifact('MathLib')
     const PaymentLib            = getArtifact('PaymentLib')
@@ -38,16 +37,13 @@ async function main() {
     const RequestLib            = getArtifact('RequestLib')
     const RequestMetaLib        = getArtifact('RequestMetaLib')
     const RequestScheduleLib    = getArtifact('RequestScheduleLib')
-    const RequestTracker        = getArtifact('RequestTracker')
     const SafeMath              = getArtifact('SafeMath')
-    const SchedulerLib          = getArtifact('SchedulerLib')
     const TimestampScheduler    = getArtifact('TimestampScheduler')
     const TransactionRequestCore= getArtifact('TransactionRequestCore')
 
     let blockScheduler,
         claimLib,
         executionLib,
-        groveLib,
         iterTools,
         mathLib,
         paymentLib,
@@ -55,9 +51,7 @@ async function main() {
         requestLib,
         requestMetaLib,
         requestScheduleLib,
-        requestTracker,
         safeMath,
-        schedulerLib,
         timestampScheduler,
         transactionRequestCore
 
@@ -71,10 +65,6 @@ async function main() {
         })
         .then(instance => {
             executionLib = instance
-            return GroveLib.new(___)
-        })
-        .then(instance => {
-            groveLib = instance
             return IterTools.new(___)
         })
         .then(instance => {
@@ -110,20 +100,6 @@ async function main() {
         })
         .then(instance => {
             requestLib = instance
-            linkLibrary(SchedulerLib, mathLib)
-            linkLibrary(SchedulerLib, paymentLib)
-            linkLibrary(SchedulerLib, requestLib)
-            linkLibrary(SchedulerLib, safeMath)
-            return SchedulerLib.new(___)
-        })
-        .then(instance => {
-            schedulerLib = instance
-            linkLibrary(RequestTracker, groveLib)
-            linkLibrary(RequestTracker, mathLib)
-            return RequestTracker.new(___)
-        })
-        .then(instance => {
-            requestTracker = instance
             linkLibrary(TransactionRequestCore, claimLib)
             linkLibrary(TransactionRequestCore, executionLib)
             linkLibrary(TransactionRequestCore, mathLib)
@@ -142,9 +118,7 @@ async function main() {
             linkLibrary(RequestFactory, iterTools)
             linkLibrary(RequestFactory, paymentLib)
             linkLibrary(RequestFactory, requestLib)
-            linkLibrary(RequestFactory, requestTracker)
             return RequestFactory.new(
-                requestTracker.address,
                 transactionRequestCore.address,
                 ___
             )
@@ -152,7 +126,6 @@ async function main() {
         .then(instance => {
             requestFactory = instance
             linkLibrary(BlockScheduler, paymentLib)
-            linkLibrary(BlockScheduler, schedulerLib)
             linkLibrary(BlockScheduler, requestScheduleLib)
             linkLibrary(BlockScheduler, requestLib)
             linkLibrary(BlockScheduler, mathLib)
@@ -161,7 +134,6 @@ async function main() {
         .then(instance => {
             blockScheduler = instance
             linkLibrary(TimestampScheduler, paymentLib)
-            linkLibrary(TimestampScheduler, schedulerLib)
             linkLibrary(TimestampScheduler, requestScheduleLib)
             linkLibrary(TimestampScheduler, requestLib)
             linkLibrary(TimestampScheduler, mathLib)
@@ -173,7 +145,6 @@ async function main() {
         })
         .then(___ => {
             const contracts = {
-                requestTracker: requestTracker.address,
                 requestFactory: requestFactory.address,
                 blockScheduler: blockScheduler.address,
                 timestampScheduler: timestampScheduler.address
@@ -184,7 +155,6 @@ async function main() {
                 // Ganache attached web3
                 web3: web3,
                 // Truffle contracts with methods attached
-                requestTracker: requestTracker,
                 requestFactory: requestFactory,
                 blockScheduler: blockScheduler,
                 timestampScheduler: timestampScheduler
