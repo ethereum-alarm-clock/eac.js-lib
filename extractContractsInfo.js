@@ -1,9 +1,27 @@
+/*
+ *  Extracts the ABIs and contract addresses from Truffle
+ *  artifacts and import them into eac.js-lib.
+ *
+ *  How to use:
+ *  - node ./extractContractsInfo.js <network_name>
+ *
+ *  Available networks:
+ *  mainnet, ropsten, rinkeby, kovan, development
+ */
 const artifactsDir = './lib/build/contracts';
 const dest = './lib/build/abi'
 const fs = require('fs');
 const path = require('path');
 
-const networkId = '1002';
+const networks = {
+  'mainnet': 1,
+  'ropsten': 3,
+  'rinkeby': 4,
+  'kovan': 42,
+  'development': 1002
+};
+
+const networkId = networks[process.argv[2]];
 
 if (!fs.existsSync(dest)) {
   fs.mkdirSync(dest)
