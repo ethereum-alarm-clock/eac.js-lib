@@ -8,8 +8,7 @@ cd ..
 echo "Moving the generated contract files..."
 rm -Rfv lib/build/*
 cp -Rfv ethereum-alarm-clock/build/contracts lib/build
-mv -fv ethereum-alarm-clock/contracts.json lib/assets/development.json || true
-mv -fv ethereum-alarm-clock/development.json lib/assets || true
-node ./extractABI.js
+mv -fv contracts.json lib/assets/development.json || true
+node ./extractContractsInfo.js
 
 echo "Done."
