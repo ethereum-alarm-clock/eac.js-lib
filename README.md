@@ -18,7 +18,14 @@ Eac.js-lib is the collection of lightweight helpers and wrappers for the Ethereu
 
 ## Testing
 
-Install mocha `npm i -g mocha` and `mocha` at the root of the directory to run the test script on an isolated virtual blockchain using mocha. 
+Install mocha `npm i -g mocha` and `mocha` at the root of the directory to run the test script on an isolated virtual blockchain using mocha.
+
+## Dev version deployment
+
+* `git submodule init ethereum-alarm-clock`
+* `cd ethereum-alarm-clock && git checkout {branch} && cd ..`
+* `ganache-cli -b 4 -1 1002`
+* `./deploy.sh`
 
 ## Contributing
 
