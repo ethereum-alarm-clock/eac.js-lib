@@ -23,8 +23,9 @@ Install mocha `npm i -g mocha` and `mocha` at the root of the directory to run t
 ## Dev version deployment
 
 * `git submodule init ethereum-alarm-clock`
+* `git submodule update`
 * `cd ethereum-alarm-clock && git checkout {branch} && cd ..`
-* `ganache-cli -b 4 -1 1002`
+* `ganache-cli -b 4 -i 1002`
 * `./deploy.sh`
 
 ## Contributing
