@@ -3,6 +3,10 @@ const dest = './lib/build/abi'
 const fs = require('fs');
 const path = require('path');
 
+if (!fs.existsSync(dest)) {
+  fs.mkdirSync(dest)
+}
+
 fs.readdir(contracts, (err, files) => {
   files.forEach(file => {
     const filePath = path.join(contracts, file)
