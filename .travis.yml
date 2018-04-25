@@ -7,7 +7,7 @@ node_js:
 cache:
   directories:
     - node_modules
-before_install: npm i -g mocha
+before_install: npm install -g mocha
 install: npm install
 script:
-  - npm run lint
+  - npm test
