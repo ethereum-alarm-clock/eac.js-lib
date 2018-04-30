@@ -77,7 +77,7 @@ describe("Scheduler", () => {
 			requiredDeposit
 		)
 
-		expect(receipt.status).to.equal(1)
+		expect(Number(receipt.status)).to.equal(1)
 	})
 
 	it("Schedules a transaction using timestamp scheduling", async () => {
@@ -124,7 +124,7 @@ describe("Scheduler", () => {
 			requiredDeposit
 		)
 
-		expect(receipt.status).to.equal(1)
+		expect(Number(receipt.status)).to.equal(1)
 
 		const txRequestAddr = eac.Util.getTxRequestFromReceipt(receipt)
 
@@ -153,6 +153,6 @@ describe("Scheduler", () => {
 			gasPrice: txRequest.gasPrice,
 		})
 
-		expect(executeReceipt.status).to.equal(1)
+		expect(Number(executeReceipt.status)).to.equal(1)
 	})
 })
