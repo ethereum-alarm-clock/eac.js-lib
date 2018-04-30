@@ -60,7 +60,7 @@ describe("Request Factory", () => {
 			requiredDeposit
 		)
 
-		expect(receipt.status).to.equal(1)
+		expect(Number(receipt.status)).to.equal(1)
 
 
 		const newRequestAddress = eac.Util.getTxRequestFromReceipt(receipt)
