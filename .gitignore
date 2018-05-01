@@ -3,4 +3,4 @@ node_modules
 site
 site/
 lib/assets/tester.json
-lib/build
+lib/build/contracts
