@@ -22,15 +22,15 @@
   },
   "homepage": "https://github.com/ethereum-alarm-clock/eac.js-lib#readme",
   "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.0.1",
     "@digix/tempo": "^0.2.0",
-    "ganache-core": "^2.0.2",
-    "truffle-contract": "^3.0.3",
-    "web3": "^0.20.4"
+    "chai": "^4.1.2",
+    "ganache-core": "^2.1.0",
+    "mocha": "^5.1.1",
+    "truffle-contract": "^3.0.5",
+    "web3": "^0.20.6"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
-    "ethereumjs-util": "^5.1.4"
+    "ethereumjs-util": "^5.2.0"
   }
 }
