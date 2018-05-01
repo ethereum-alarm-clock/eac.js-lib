@@ -156,7 +156,6 @@ describe("Request Factory", () => {
         const isValid = await requestFactory.validateRequestParams(
             addressArgs,
             uintArgs,
-            callData,
             endowment
         )
 
@@ -174,7 +173,6 @@ describe("Request Factory", () => {
         const isValidFail = await requestFactory.validateRequestParams(
             addressArgs,
             uintArgs,
-            callData,
             endowment.sub('1000')
         )
 
