@@ -9,7 +9,8 @@ echo "Moving the generated contract files..."
 rm -Rfv lib/build/*
 
 echo "mv -fv ethereum-alarm-clock/build/* lib/build/"
-mv -fv --strip-trailing-slashes ethereum-alarm-clock/build/* lib/build/
+mv --version
+mv -fv --strip-trailing-slashes ethereum-alarm-clock/build/* lib/build/*
 
 node ./extractContractsInfo.js development
 mv -fv contracts.json lib/assets/development.json || true
