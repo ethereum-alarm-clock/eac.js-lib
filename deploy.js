@@ -10,7 +10,7 @@ const web3 = new Web3(provider)
 const TruffleContract = require('truffle-contract')
 
 const getArtifact = name => {
-    const contract = TruffleContract(require(`./lib/build/abi/${name}.json`))
+    const contract = TruffleContract(require(`./lib/build/contracts/${name}.json`))
     contract.setProvider(provider)
     contract.detectNetwork()
     return contract
