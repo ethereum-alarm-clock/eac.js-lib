@@ -10,7 +10,7 @@ rm -Rfv lib/build/*
 
 echo "cp -Rfv ethereum-alarm-clock/build/* lib/build/"
 cp --version
-cp -Rfv ethereum-alarm-clock/build/ lib/build/*
+cp -Rfv ethereum-alarm-clock/build/ lib/build/
 
 node ./extractContractsInfo.js development
 mv -fv contracts.json lib/assets/development.json || true
