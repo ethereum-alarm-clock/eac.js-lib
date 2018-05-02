@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
-    "ethereumjs-util": "^5.2.0",
-    "truffle": "^4.1.7"
+    "ethereumjs-util": "^5.2.0"
   }
 }
