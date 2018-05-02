@@ -4,4 +4,4 @@ site
 site/
 lib/assets/tester.json
 lib/assets/development.json
-lib/build
+lib/build/contracts
