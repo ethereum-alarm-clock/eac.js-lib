@@ -30,7 +30,6 @@ if (!fs.existsSync(dest)) {
 const contracts = {}
 
 fs.readdir(artifactsDir, (err, files) => {
-  console.log(files)
   files.forEach(file => {
     const contractName = uncapitalize(file.split('.json')[0]);
 
