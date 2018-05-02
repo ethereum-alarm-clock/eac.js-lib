@@ -11,6 +11,7 @@ before_install: npm install -g mocha
 install: npm install
 script:
   - npm i -g truffle
+  - sh deploy.sh
   - npm test
 git:
   submodules: true
