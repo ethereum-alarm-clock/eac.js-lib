@@ -1,1 +1,17 @@
-{"baseScheduler":"0x4e489fbcfa2153d49e162aa3f5b7c84e0278823f","blockScheduler":"0x1940973bc8b555daf699296a8edeceaa7adeaf37","claimLib":"0xaaa437b92eaba969a9a9810884b1ce6256201515","executionLib":"0xbc6894b7be4436fd4ec8f7de5ec0efc4a09aafa5","iterTools":"0x4a6e05b4943ab5f925dcae7c036b795d5ed28f48","mathLib":"0xe2f17126c6858916fad9ded8796141dbc3b52174","paymentLib":"0x5f10470f2fb2d642b346bf712e82aef4b78e3f66","requestFactory":"0x66680c350113c3ae35797b45141caee313e8163a","requestLib":"0x252d38325fed2906e81e44e54208f22bc6e4b703","requestMetaLib":"0xf8a728da59213ae36cc8b730cb94e57246f83124","requestScheduleLib":"0x6cffcf69a05defd1c7397385639e0bb92ffb3965","safeMath":"0x4dfb76329565cdb95b612e117c4551ecbc8dd6bd","timestampScheduler":"0x84db0ea4f07a58c5530a0ae6daab40983e0d868a","transactionRequestCore":"0x6cea7a1bfc364ac2d078276e7a99d412b890d6ce","transactionRecorder":"0xa50c6611f841313da294124d0ab6b02cf130131a"}
+{
+    "baseScheduler": "0xa5b77caa4f414a9f1a350d1ae2c2c9f66c9b1e44",
+    "blockScheduler": "0x394ce9fe06c72f18e5a845842974f0c1224b1ff5",
+    "claimLib": "0x7a764bb00fe101c53450a97519ad191e3c4830c5",
+    "executionLib": "0x4069bd5286f1287173f683295683e97783913fc4",
+    "iterTools": "0x97a614f0dfd6e034e081b79fbaa1c6531e3956ee",
+    "mathLib": "0xea5c9406c8ee832fed3d82348a9992c20640eaee",
+    "paymentLib": "0x4c767bb10b5b0f4aafd68d6a26513082152444c4",
+    "requestFactory": "0x98c128b3d8a0ac240f7b7dd4969ea0ad54f9d330",
+    "requestLib": "0x3381d072c9672747c69342c78f1fc97b1db3db84",
+    "requestMetaLib": "0x3fef9e4c267b6d1d508ee547fca9e474787ef68e",
+    "requestScheduleLib": "0x4206938c8c3853898fc7bc227aaf420bfca32aa2",
+    "safeMath": "0x656aa18a8cd4e2e60470f1a01080ad0a8bed4781",
+    "timestampScheduler": "0x31bbbf5180f2bd9c213e2e1d91a439677243268a",
+    "transactionRequestCore": "0x54d4a85e85a54d21168ebf37fa22e32eb79b8d3f",
+    "transactionRecorder": "0xcf5aa253bb5bd2d38ebc659ded8a4c3846b5471e"
+}
