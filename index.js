@@ -5,6 +5,7 @@ const RequestFactory = require("./lib/requestFactory")
 const Scheduler = require("./lib/scheduling")
 const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
+const RequestData = require("./lib/txRequest/requestData")
 
 module.exports = (web3) => {
   if (!web3) {
@@ -14,6 +15,7 @@ module.exports = (web3) => {
       Scheduler,
       TxRequest,
       Util: Util(),
+      RequestData
     }
   }
 
@@ -36,5 +38,6 @@ module.exports = (web3) => {
     },
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
+    RequestData
   }
 }
