@@ -21,8 +21,8 @@ describe("Scheduler", () => {
 
 		const expectedEndowment = bounty
 			.plus(fee)
-			.plus(callGas.mul(gasPrice))
-			.plus(gasPrice.mul(180000))
+			.plus(callGas.times(gasPrice))
+			.plus(gasPrice.times(180000))
 			.plus(callValue)
 
 		const endowment = eac.Util.calcEndowment(
@@ -144,7 +144,7 @@ describe("Scheduler", () => {
 
 		expect(await txRequest.inExecutionWindow()).to.be.true
 
-		const executeGas = txRequest.callGas.add(180000)
+		const executeGas = txRequest.callGas.plus(180000)
 
 		const executeReceipt = await txRequest.execute({
 			from: web3.eth.defaultAccount,
