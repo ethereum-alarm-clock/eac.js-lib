@@ -2,20 +2,20 @@
 
 const Constants = require("./lib/constants")
 const RequestFactory = require("./lib/requestFactory")
-const RequestTracker = require("./lib/requestTracker")
 const Scheduler = require("./lib/scheduling")
 const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
+const RequestData = require("./lib/txRequest/requestData")
 
 module.exports = (web3) => {
   if (!web3) {
     return {
       Constants,
       RequestFactory,
-      RequestTracker,
       Scheduler,
       TxRequest,
       Util: Util(),
+      RequestData
     }
   }
 
@@ -26,15 +26,6 @@ module.exports = (web3) => {
       const chainName = await util.getChainName()
       const contracts = require(`./lib/assets/${chainName}.json`)
       return new RequestFactory(contracts.requestFactory, web3)
-    },
-    requestTracker: async () => {
-      const chainName = await util.getChainName()
-      const contracts = require(`./lib/assets/${chainName}.json`)
-      return new RequestTracker(
-        contracts.requestTracker,
-        contracts.requestFactory,
-        web3
-      )
     },
     scheduler: async () => {
       const chainName = await util.getChainName()
@@ -47,5 +38,6 @@ module.exports = (web3) => {
     },
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
+    RequestData
   }
 }

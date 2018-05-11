@@ -156,7 +156,6 @@ describe("Request Factory", () => {
         const isValid = await requestFactory.validateRequestParams(
             addressArgs,
             uintArgs,
-            callData,
             endowment
         )
 
@@ -174,7 +173,6 @@ describe("Request Factory", () => {
         const isValidFail = await requestFactory.validateRequestParams(
             addressArgs,
             uintArgs,
-            callData,
             endowment.sub('1000')
         )
 
@@ -263,5 +261,26 @@ describe("Request Factory", () => {
             const stopped = await requestFactory.stopWatch(test2);
             expect(stopped).to.equal(true);
         },900);
+    })
+
+    it('tests bucket calculation', async () => {
+        const requestFactory = await eac.requestFactory()
+        expect(requestFactory.address).to.exist
+
+        const test1 = requestFactory.calcBucket(3200, 1)
+        const res1 = await new Promise(resolve => {
+            requestFactory.instance.getBucket(3200, 1, (err,res) => {
+                if (!err) resolve(res)
+            })
+        })
+        expect(res1.toNumber()).to.equal(test1)
+        
+        const test2 = requestFactory.calcBucket(320000, 2)
+        const res2 = await new Promise(resolve => {
+            requestFactory.instance.getBucket(320000, 2, (err,res) => {
+                if (!err) resolve(res)
+            })
+        })
+        expect(res2.toNumber()).to.equal(test2)
     })
 })
