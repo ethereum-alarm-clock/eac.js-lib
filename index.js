@@ -1,11 +1,14 @@
 /* eslint global-require: "off", import/no-dynamic-require: "off" */
 
+const path = require('path')
 const Constants = require("./lib/constants")
 const RequestFactory = require("./lib/requestFactory")
 const Scheduler = require("./lib/scheduling")
 const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
 const RequestData = require("./lib/txRequest/requestData")
+const EAC = path.resolve(__dirname, 'ethereum-alarm-clock/package.json')
+const contracts = require(EAC).version;
 
 module.exports = (web3) => {
   if (!web3) {
@@ -15,7 +18,8 @@ module.exports = (web3) => {
       Scheduler,
       TxRequest,
       Util: Util(),
-      RequestData
+      RequestData,
+      contracts
     }
   }
 
@@ -38,6 +42,7 @@ module.exports = (web3) => {
     },
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
-    RequestData
+    RequestData,
+    contracts
   }
 }
