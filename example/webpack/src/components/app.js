@@ -1,10 +1,7 @@
-'use strict'
-
-const BigNumber = require('bignumber.js')
-const React = require('react')
-const Web3 = require('web3')
-
-const eac = require('eac.js')
+import BigNumber from 'bignumber.js';
+import React from 'react';
+import Web3 from 'web3';
+import eac from 'eac.js-lib';
 
 class App extends React.Component {
   constructor (props) {
@@ -14,7 +11,7 @@ class App extends React.Component {
 		}
 	}
 
-	componentDidMount () {
+	async componentDidMount () {
 		if (typeof web3 !== 'undefined') {
 			// mist/metamask is active
 			web3 = new Web3(web3.currentProvider)
@@ -24,7 +21,9 @@ class App extends React.Component {
 					web3.eth.defaultAccount = res[0]
 				}
 			})
-			window.eacScheduler = new eac.Scheduler(web3, 'ropsten')
+			const EAC = eac(web3);
+
+			window.eacScheduler = await EAC.scheduler();
 		}
 	}
 
@@ -84,36 +83,36 @@ class App extends React.Component {
 				</section>
         <hr />
 				<div className='field'>
-				<label className='label' for='toAddress'>Recipient Address:</label>
+				<label className='label' htmlFor='toAddress'>Recipient Address:</label>
 				<input className='input' type='text' id='toAddress' />
 
-				<label className='label' for='callData'>Call Data:</label>
+				<label className='label' htmlFor='callData'>Call Data:</label>
 				<input className='input' type='text' id='callData' />
 
-				<label className='label' for='callGas'>Call Gas:</label>
+				<label className='label' htmlFor='callGas'>Call Gas:</label>
 				<input className='input' type='text' id='callGas' />
 
-				<label className='label' for='callValue'>Call Value</label>
+				<label className='label' htmlFor='callValue'>Call Value</label>
 				<input className='input' type='text' id='callValue' />
 
-				<label className='label' for='windowSize'>Window Size:</label>
+				<label className='label' htmlFor='windowSize'>Window Size:</label>
 				<input className='input' type='text' id='windowSize' />
 
-				<label className='label' for='windowStart'>Window Start:</label>
+				<label className='label' htmlFor='windowStart'>Window Start:</label>
 				<input className='input' type='text' id='windowStart' />
 
-				<label className='label' for='gasPrice'>Gas Price:</label>
+				<label className='label' htmlFor='gasPrice'>Gas Price:</label>
 				<input className='input' type='text' id='gasPrice' />
 
-				<label className='label' for='donation'>Donation:</label>
+				<label className='label' htmlFor='donation'>Donation:</label>
 				<input className='input' type='text' id='donation' />
 
-				<label className='label' for='payment'>Payment:</label>
+				<label className='label' htmlFor='payment'>Payment:</label>
 				<input className='input' type='text' id='payment' />
 
-				<label className='label' for='requiredDeposit'>Required Deposit</label>
+				<label className='label' htmlFor='requiredDeposit'>Required Deposit</label>
 				<input className='input' type='text' id='requiredDeposit' />
-				
+
 				<hr />
 				<div className="control">
 					<div className="select">
