@@ -8,9 +8,7 @@ const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
 const RequestData = require("./lib/txRequest/requestData")
 const version = require('./package.json').version;
-
-const EAC = path.resolve(__dirname, 'ethereum-alarm-clock/package.json')
-const contracts = require(EAC).version;
+const contracts = require("./lib/build/ethereum-alarm-clock.json").version;
 
 module.exports = (web3) => {
   if (!web3) {
