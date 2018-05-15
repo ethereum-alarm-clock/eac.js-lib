@@ -1,6 +1,5 @@
 /* eslint global-require: "off", import/no-dynamic-require: "off" */
 
-const path = require('path')
 const Constants = require("./lib/constants")
 const RequestFactory = require("./lib/requestFactory")
 const Scheduler = require("./lib/scheduling")
