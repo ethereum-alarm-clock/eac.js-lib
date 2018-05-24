@@ -30,7 +30,7 @@
     "web3": "^0.20.6"
   },
   "dependencies": {
-    "bignumber.js": "^5.0.0",
+    "bignumber.js": "^7.2.1",
     "ethereumjs-util": "^5.2.0"
   }
 }
