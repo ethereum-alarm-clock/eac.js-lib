@@ -30,39 +30,42 @@ export default class Scheduler {
     }
   }
 
-  getFactoryAddress(): Promise<Address> {
+  public getFactoryAddress(): Promise<Address> {
     return new Promise((resolve, reject) => {
       this.blockScheduler.factoryAddress.call((err: any, address: Address) => {
-        if (!err) resolve(address);
-        else reject(err);
+        if (!err) {
+          resolve(address);
+        } else {
+          reject(err);
+        }
       });
     });
   }
 
-  initSender(opts: any): boolean {
+  public initSender(opts: any): boolean {
     this.sender = opts.from;
     this.gasLimit = opts.gas;
     this.sendValue = opts.value;
     return true;
   }
 
-  setGas(gasLimit: number): boolean {
+  public setGas(gasLimit: number): boolean {
     this.gasLimit = gasLimit;
     return true;
   }
 
-  setSender(address: Address): boolean {
+  public setSender(address: Address): boolean {
     // TODO verfiy with ethUtil
     this.sender = address;
     return true;
   }
 
-  setSendValue(value: number): boolean {
+  public setSendValue(value: number): boolean {
     this.sendValue = value;
     return true;
   }
 
-  blockSchedule(
+  public blockSchedule(
     toAddress: any,
     callData: any,
     callGas: any,
@@ -95,8 +98,9 @@ export default class Scheduler {
           value: this.sendValue,
         },
         (err: any, txHash: any) => {
-          if (err) reject(err);
-          else {
+          if (err) {
+            reject(err);
+          } else {
             const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
 
             if (waitForMined) {
@@ -105,8 +109,8 @@ export default class Scheduler {
               .catch((e) => reject(e));
             } else {
               resolve({
-                transactionHash: txHash,
                 miningPromise,
+                transactionHash: txHash,
               });
             }
           }
@@ -115,7 +119,7 @@ export default class Scheduler {
     });
   }
 
-  timestampSchedule(
+  public timestampSchedule(
     toAddress: any,
     callData: any,
     callGas: any,
@@ -148,8 +152,9 @@ export default class Scheduler {
           value: this.sendValue,
         },
         (err: any, txHash: any) => {
-          if (err) reject(err);
-          else {
+          if (err) {
+            reject(err);
+          } else {
             const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
 
             if (waitForMined) {
@@ -158,8 +163,8 @@ export default class Scheduler {
                 .catch((e) => reject(e));
             } else {
               resolve({
-                transactionHash: txHash,
                 miningPromise,
+                transactionHash: txHash,
               });
             }
           }
@@ -168,16 +173,7 @@ export default class Scheduler {
     });
   }
 
-  /**
-   * Calculates the required endowment for scheduling a transactions
-   * with the following parameters
-   * @param {Number|String|BigNumber} callGas
-   * @param {Number|String|BigNumber} callValue
-   * @param {Number|String|BigNumber} gasPrice
-   * @param {Number|String|BigNumber} fee
-   * @param {Number|String|BigNumber} bounty
-   */
-  calcEndowment(callGas: number, callValue: number, gasPrice: number, fee: number, bounty: number): BigNumber {
+  public calcEndowment(callGas: number, callValue: number, gasPrice: number, fee: number, bounty: number): BigNumber {
     // Convert the value to a bignumber works even if it's already one.
     const callGasBN = new BigNumber(callGas);
     const callValueBN = new BigNumber(callValue);
