@@ -1,10 +1,21 @@
-/* eslint class-methods-use-this: "off" */
+import BigNumber from 'bignumber.js';
 
-const BigNumber = require("bignumber.js");
-const Util = require("../util")();
+import initUtil from '../util';
+const Util = new initUtil(null);
 
-class Scheduler {
-  constructor(bSchedulerAddress, tSchedulerAddress, web3) {
+type Address = string;
+
+export default class Scheduler {
+  public blockScheduler: any;
+  public timestampScheduler: any;
+  public web3: any;
+
+  public sender: Address = '';
+  public gasLimit: number = 0;
+  public sendValue: number = 0;
+
+
+  constructor(bSchedulerAddress: Address, tSchedulerAddress: Address, web3: any) {
     this.web3 = web3;
     try {
       const BlockSchedulerABI = Util.getABI("BlockScheduler");
@@ -20,47 +31,51 @@ class Scheduler {
     }
   }
 
-  getFactoryAddress() {
+  getFactoryAddress(): Promise<Address> {
     return new Promise((resolve, reject) => {
-      this.blockScheduler.factoryAddress.call((err, address) => {
+      this.blockScheduler.factoryAddress.call((err: any, address: Address) => {
         if (!err) resolve(address);
         else reject(err);
       });
     });
   }
 
-  initSender(opts) {
+  initSender(opts: any): boolean {
     this.sender = opts.from;
     this.gasLimit = opts.gas;
     this.sendValue = opts.value;
+    return true;
   }
 
-  setGas(gasLimit) {
+  setGas(gasLimit: number): boolean {
     this.gasLimit = gasLimit;
+    return true;
   }
 
-  setSender(address) {
+  setSender(address: Address): boolean {
     // TODO verfiy with ethUtil
     this.sender = address;
+    return true;
   }
 
-  setSendValue(value) {
+  setSendValue(value: number): boolean {
     this.sendValue = value;
+    return true;
   }
 
   blockSchedule(
-    toAddress,
-    callData,
-    callGas,
-    callValue,
-    windowSize,
-    windowStart,
-    gasPrice,
-    fee,
-    bounty,
-    requiredDeposit,
-    waitForMined = true,
-  ) {
+    toAddress: any,
+    callData: any,
+    callGas: any,
+    callValue: any,
+    windowSize: any,
+    windowStart: any,
+    gasPrice: any,
+    fee: any,
+    bounty: any,
+    requiredDeposit: any,
+    waitForMined: boolean = true,
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.blockScheduler.schedule.sendTransaction(
         toAddress,
@@ -80,10 +95,10 @@ class Scheduler {
           gas: this.gasLimit,
           value: this.sendValue,
         },
-        (err, txHash) => {
+        (err: any, txHash: any) => {
           if (err) reject(err);
           else {
-            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash);
+            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
 
             if (waitForMined) {
               miningPromise
@@ -102,17 +117,17 @@ class Scheduler {
   }
 
   timestampSchedule(
-    toAddress,
-    callData,
-    callGas,
-    callValue,
-    windowSize,
-    windowStart,
-    gasPrice,
-    fee,
-    bounty,
-    requiredDeposit,
-    waitForMined = true,
+    toAddress: any,
+    callData: any,
+    callGas: any,
+    callValue: any,
+    windowSize: any,
+    windowStart: any,
+    gasPrice: any,
+    fee: any,
+    bounty: any,
+    requiredDeposit: any,
+    waitForMined: boolean = true,
   ) {
     return new Promise((resolve, reject) => {
       this.timestampScheduler.schedule(
@@ -133,10 +148,10 @@ class Scheduler {
           gas: this.gasLimit,
           value: this.sendValue,
         },
-        (err, txHash) => {
+        (err: any, txHash: any) => {
           if (err) reject(err);
           else {
-            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash);
+            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
 
             if (waitForMined) {
               miningPromise
@@ -163,31 +178,7 @@ class Scheduler {
    * @param {Number|String|BigNumber} fee
    * @param {Number|String|BigNumber} bounty
    */
-  calcEndowment(callGas, callValue, gasPrice, fee, bounty) {
-    // Convert the value to a bignumber works even if it's already one.
-    const callGasBN = new BigNumber(callGas);
-    const callValueBN = new BigNumber(callValue);
-    const gasPriceBN = new BigNumber(gasPrice);
-    const feeBN = new BigNumber(fee);
-    const bountyBN = new BigNumber(bounty);
-
-    return bountyBN
-      .plus(feeBN.times(2))
-      .plus(callGasBN.times(gasPrice))
-      .plus(gasPriceBN.times(180000))
-      .plus(callValueBN);
-  }
-
-  /**
-   * Calculates the required endowment for scheduling a transactions
-   * with the following parameters
-   * @param {Number|String|BigNumber} callGas
-   * @param {Number|String|BigNumber} callValue
-   * @param {Number|String|BigNumber} gasPrice
-   * @param {Number|String|BigNumber} fee
-   * @param {Number|String|BigNumber} bount
-   */
-  static calcEndowment(callGas, callValue, gasPrice, fee, bounty) {
+  calcEndowment(callGas: number, callValue: number, gasPrice: number, fee: number, bounty: number): BigNumber {
     // Convert the value to a bignumber works even if it's already one.
     const callGasBN = new BigNumber(callGas);
     const callValueBN = new BigNumber(callValue);
@@ -222,5 +213,3 @@ class Scheduler {
   //   return new Scheduler(web3, "kovan")
   // }
 }
-
-module.exports = Scheduler;

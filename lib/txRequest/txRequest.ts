@@ -6,6 +6,10 @@ import RequestData from "./requestData";
 
 const Util = new initUtil(null);
 
+enum TXREQUEST_ERROR {
+  NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address.";
+}
+
 export default class TxRequest {
   public data: RequestData = {} as RequestData;
   public instance: any;
@@ -13,7 +17,7 @@ export default class TxRequest {
 
   constructor(address, web3) {
     if (!Util.checkNotNullAddress(address)) {
-      throw new Error("Attempted to instantiate a TxRequest class from a null address.");
+      throw new Error(TXREQUEST_ERROR.NULL_ADDRESS);
     }
 
     this.web3 = web3;

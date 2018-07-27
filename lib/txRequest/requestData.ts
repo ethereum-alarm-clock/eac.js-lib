@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js';
 
 interface IClaimData {
   claimedBy: string;
-  claimDeposit: number;
+  claimDeposit: BigNumber;
   paymentModifier: number;
-  requiredDeposit: number;
+  requiredDeposit: BigNumber;
 }
 
 interface IMeta {
@@ -18,25 +18,25 @@ interface IMeta {
 interface IPaymentData {
   feeRecipient: string;
   bountyBenefactor: string;
-  fee: number;
-  feeOwed: number;
-  bounty: number;
-  bountyOwed: number;
+  fee: BigNumber;
+  feeOwed: BigNumber;
+  bounty: BigNumber;
+  bountyOwed: BigNumber;
 }
 
 interface ISchedule {
-  claimWindowSize: number;
-  freezePeriod: number;
-  reservedWindowSize: number;
+  claimWindowSize: BigNumber;
+  freezePeriod: BigNumber;
+  reservedWindowSize: BigNumber;
   temporalUnit: number;
-  windowSize: number;
-  windowStart: number;
+  windowSize: BigNumber;
+  windowStart: BigNumber;
 }
 
 interface ITxData {
-  callGas: number;
-  callValue: number;
-  gasPrice: number;
+  callGas: BigNumber;
+  callValue: BigNumber;
+  gasPrice: BigNumber;
   toAddress: string;
 }
 
