@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
 
-import initUtil from '../util';
+import initUtil from "../util";
 const Util = new initUtil(null);
 
 type Address = string;
@@ -10,10 +10,9 @@ export default class Scheduler {
   public timestampScheduler: any;
   public web3: any;
 
-  public sender: Address = '';
+  public sender: Address = "";
   public gasLimit: number = 0;
   public sendValue: number = 0;
-
 
   constructor(bSchedulerAddress: Address, tSchedulerAddress: Address, web3: any) {
     this.web3 = web3;

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
 
 interface IClaimData {
   claimedBy: string;
@@ -55,7 +55,6 @@ export default class RequestData implements IRequestData {
   public paymentData: IPaymentData = {} as IPaymentData;
   public schedule: ISchedule = {} as ISchedule;
   public txData: ITxData = {} as ITxData;
-
 
   public txRequest: any;
 

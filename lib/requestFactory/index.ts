@@ -29,24 +29,30 @@ export default class RequestFactory {
    * Conveinence methods
    */
 
-  isKnownRequest(requestAddress: Address) {
+  public isKnownRequest(requestAddress: Address) {
     return new Promise((resolve, reject) => {
-      this.instance.isKnownRequest.call(requestAddress, (err, isKnown) => {
-        if (!err) resolve(isKnown);
-        else reject(err);
+      this.instance.isKnownRequest.call(requestAddress, (err: any, isKnown: any) => {
+        if (!err) {
+          resolve(isKnown);
+        } else {
+          reject(err);
+        }
       });
     });
   }
 
-  validateRequestParams(addressArgs: string[], uintArgs: number[], endowment: number) {
+  public validateRequestParams(addressArgs: string[], uintArgs: number[], endowment: number) {
     return new Promise((resolve, reject) => {
       this.instance.validateRequestParams.call(
         addressArgs,
         uintArgs,
         endowment,
         (err: any, isValid: any) => {
-          if (!err) resolve(isValid);
-          else reject(err);
+          if (!err) {
+            resolve(isValid);
+          } else {
+            reject(err);
+          }
         },
       );
     });
@@ -59,8 +65,8 @@ export default class RequestFactory {
    * @return {Array<String>} An array of the strings of validation errors or an
    * array of length 0 if no errors.
    */
-  parseIsValid(isValid: boolean[]): string[] {
-    if (isValid.length != 6) {
+  public parseIsValid(isValid: boolean[]): string[] {
+    if (isValid.length !== 6) {
       throw new Error("Must pass an array of booleans returned by validateRequestParams()");
     }
     const Errors = [
@@ -80,7 +86,7 @@ export default class RequestFactory {
     return errors;
   }
 
-  async getRequestCreatedLogs(filter: any, startBlockNum: number, endBlockNum: number): Promise<any> {
+  public async getRequestCreatedLogs(filter: any, startBlockNum: number, endBlockNum: number): Promise<any> {
     const f = filter || {};
     const curBlock = await Util.getBlockNumber(this.web3);
     const start = startBlockNum || 1;
@@ -93,12 +99,14 @@ export default class RequestFactory {
       event.get((err: any, logs: any[]) => {
         if (!err) {
           resolve(logs);
-        } else reject(err);
+        } else {
+          reject(err);
+        }
       });
     });
   }
 
-  watchRequestCreatedLogs(filter: any, startBlockNum: any, callback: Function): any {
+  public async watchRequestCreatedLogs(filter: any, startBlockNum: any, callback: any): Promise<any> {
     const f = filter || {};
     const curBlock = await Util.getBlockNumber(this.web3);
     const start = startBlockNum || 1;
@@ -106,28 +114,30 @@ export default class RequestFactory {
       f,
       { fromBlock: start, toBlock: "latest" },
     );
-    event.watch(function(e, r){
-      callback(e, r);
+    event.watch((err: any, res: any) => {
+      callback(err, res);
     });
     return event;
   }
 
-  async stopWatch(event: any): Promise<{}> {
+  public async stopWatch(event: any): Promise<{}> {
     return new Promise((resolve, reject) => {
-      event.stopWatching( (err, res) => {
+      event.stopWatching((err: any, res: any) => {
         if (!err) {
           resolve(res);
-        } else reject(err);
+        } else {
+          reject(err);
+        }
       });
     });
   }
 
-  async getRequestsByBucket(bucket: any): Promise<any[]> {
+  public async getRequestsByBucket(bucket: any): Promise<any[]> {
     const logs = await this.getRequestCreatedLogs({
       bucket,
     }, 0, 0);
     const requests = [] as any[];
-    logs.forEach((log) => {
+    logs.forEach((log: any) => {
       requests.push({
         address: log.args.request,
         params: log.args.params,
@@ -136,7 +146,7 @@ export default class RequestFactory {
     return requests;
   }
 
-  async watchRequestsByBucket(bucket: any, cb: any): any {
+  public async watchRequestsByBucket(bucket: any, cb: any): Promise<any> {
     return await this.watchRequestCreatedLogs({
       bucket,
     }, "",
@@ -151,11 +161,11 @@ export default class RequestFactory {
   }
 
   // Assume the temporalUnit is blocks if not timestamp.
-  calcBucket(windowStart: number, temporalUnit: number) {
+  public calcBucket(windowStart: number, temporalUnit: number) {
     let bucketSize = 240;  // block bucketsize
     let sign = -1;  // block sign
 
-    if (temporalUnit == 2) {
+    if (temporalUnit === 2) {
       bucketSize = 3600; // timestamp bucketsize
       sign = 1; // timestamp sign
     }
@@ -163,7 +173,7 @@ export default class RequestFactory {
     return sign * (windowStart - (windowStart % bucketSize));
   }
 
-  async getRequests(startBlock: number, endBlock: number) {
+  public async getRequests(startBlock: number, endBlock: number) {
     const logs = await this.getRequestCreatedLogs({}, startBlock, endBlock);
     const requests = [] as any[];
     logs.forEach((log: any) => {
@@ -172,7 +182,7 @@ export default class RequestFactory {
     return requests;
   }
 
-  async watchRequests(startBlock: number, callback: Function) {
+  public async watchRequests(startBlock: number, callback: any) {
     return await this.watchRequestCreatedLogs({}, startBlock,
       (error: any, log: any) => {
         if (log) {
@@ -181,7 +191,7 @@ export default class RequestFactory {
       });
   }
 
-  async getRequestsByOwner(owner: string, startBlock: number, endBlock: number) {
+  public async getRequestsByOwner(owner: string, startBlock: number, endBlock: number) {
     const logs = await this.getRequestCreatedLogs({
       owner,
     }, startBlock, endBlock);
@@ -192,7 +202,7 @@ export default class RequestFactory {
     return requests;
   }
 
-  async watchRequestsByOwner(owner: string, startBlock: number, callback: Function): any {
+  public async watchRequestsByOwner(owner: string, startBlock: number, callback: any): Promise<any> {
     return await this.watchRequestCreatedLogs({
       owner,
     }, startBlock, (error: any, log: any) => {

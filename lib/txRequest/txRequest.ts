@@ -7,7 +7,7 @@ import RequestData from "./requestData";
 const Util = new initUtil(null);
 
 enum TXREQUEST_ERROR {
-  NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address.";
+  NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address."; ,
 }
 
 export default class TxRequest {

@@ -5,6 +5,11 @@ import Constants from "./constants";
 
 type Address = string;
 
+enum UTIL_ERROR {
+  WEB3_ERROR = "[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.";
+  DEPRECATED = "[eac.js-lib] Deprecated.";
+}
+
 export default class Util {
   public web3: any;
 
@@ -12,22 +17,21 @@ export default class Util {
     this.web3 = web3;
   }
 
-  private checkWeb3(web3: any): any {
-    if (!web3 && !this.web3) {
-      throw new Error("[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.");
-    }
-    return web3 || this.web3;
-  }
-
-  calcEndowment(gas: BigNumber, value: BigNumber, gasPrice: BigNumber, fee: BigNumber, bounty: BigNumber): BigNumber {
+  public calcEndowment(
+    gas: BigNumber,
+    value: BigNumber,
+    gasPrice: BigNumber,
+    fee: BigNumber,
+    bounty: BigNumber,
+  ): BigNumber {
     return bounty.add(fee).add(gas.times(gasPrice)).add(gasPrice.times(180000)).add(value);
   }
 
-  checkForUnlockedAccount = () => {
-    throw new Error("[eac.js-lib] Deprecated.");
+  public checkForUnlockedAccount() {
+    throw new Error(UTIL_ERROR.DEPRECATED);
   }
 
-  checkNetworkID(web3: any): Promise<boolean> {
+  public checkNetworkID(web3: any): Promise<boolean> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -58,15 +62,15 @@ export default class Util {
     });
   }
 
-  checkNotNullAddress(address: Address): boolean {
+  public checkNotNullAddress(address: Address): boolean {
     return address !== Constants.NULL_ADDRESS;
   }
 
-  checkValidAddress(address: Address): boolean {
+  public checkValidAddress(address: Address): boolean {
     return ethUtil.isValidAddress(address);
   }
 
-  estimateGas(web3: any, opts: {}): Promise<number> {
+  public estimateGas(web3: any, opts: {}): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -80,11 +84,11 @@ export default class Util {
     });
   }
 
-  getABI(name: string): {} {
+  public getABI(name: string): {} {
     return require(`${__dirname}/build/abi/${name}.json`);
   }
 
-  getBalance(web3: any, address: Address): Promise<number> {
+  public getBalance(web3: any, address: Address): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -98,7 +102,7 @@ export default class Util {
     });
   }
 
-  getBlockNumber(web3: any): Promise<number> {
+  public getBlockNumber(web3: any): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -112,7 +116,7 @@ export default class Util {
     });
   }
 
-  getGasPrice(web3: any): Promise<number> {
+  public getGasPrice(web3: any): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -126,7 +130,7 @@ export default class Util {
     });
   }
 
-  getTimestamp(web3: any): Promise<number> {
+  public getTimestamp(web3: any): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -140,7 +144,7 @@ export default class Util {
     });
   }
 
-  getTimestampForBlock(web3: any, blockNum: any): Promise<number> {
+  public getTimestampForBlock(web3: any, blockNum: any): any {
     web3 = this.checkWeb3(web3);
 
     this.getBlockNumber(web3).then((curBlockNum) => {
@@ -160,8 +164,8 @@ export default class Util {
     });
   }
 
-  getTxRequestFromReceipt(receipt: any): Address {
-    const newRequestLog = receipt.logs.find((log) => {
+  public getTxRequestFromReceipt(receipt: any): Address {
+    const newRequestLog = receipt.logs.find((log: any) => {
       return log.topics[0] === Constants.NEWREQUESTLOG;
     });
 
@@ -172,7 +176,7 @@ export default class Util {
     return "0x" + newRequestLog.data.slice(-40);
   }
 
-  getChainName(web3: any): Promise<string> {
+  public getChainName(web3: any): Promise<string> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
@@ -203,17 +207,17 @@ export default class Util {
     });
   }
 
-  waitForTransactionToBeMined(web3: any, txHash: any, interval: any): Promise<any> {
+  public waitForTransactionToBeMined(web3: any, txHash: any, interval: any): Promise<any> {
     interval = interval || 500;
     web3 = this.checkWeb3(web3);
 
-    const txReceiptAsync = (txHash: any, resolve: any, reject: any) => {
-      web3.eth.getTransactionReceipt(txHash, (err: any, receipt: any) => {
+    const txReceiptAsync = (_txHash: any, resolve: any, reject: any) => {
+      web3.eth.getTransactionReceipt(_txHash, (err: any, receipt: any) => {
         if (err) {
           reject(err);
         } else if (receipt === null) {
           setTimeout(() => {
-            txReceiptAsync(txHash, resolve, reject);
+            txReceiptAsync(_txHash, resolve, reject);
           }, interval);
         } else {
           resolve(receipt);
@@ -224,6 +228,13 @@ export default class Util {
     return new Promise((resolve: any, reject: any) => {
       txReceiptAsync(txHash, resolve, reject);
     });
+  }
+
+  private checkWeb3(web3: any): any {
+    if (!web3 && !this.web3) {
+      throw new Error(UTIL_ERROR.WEB3_ERROR);
+    }
+    return web3 || this.web3;
   }
 }
 
