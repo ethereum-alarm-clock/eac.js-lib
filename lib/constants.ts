@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   GT_HEX: "0x3e",
   LT_HEX: "0x3c",
   GTE_HEX: "0x3e3d",
@@ -11,4 +11,4 @@ module.exports = {
     "0xc008bc849b42227c61d5063a1313ce509a6e99211bfd59e827e417be6c65c81b",
   NEWREQUESTLOG:
     "0x2749295aa7ffdbd4d16719dc03d592cd081eebd9bb790ceedce201a40675fc03",
-}
+};

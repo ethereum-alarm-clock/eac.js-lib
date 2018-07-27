@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ethereum-alarm-clock/eac.js-lib#readme",
   "devDependencies": {
     "@digix/tempo": "0.2.0",
+    "@types/node": "^10.5.3",
     "chai": "4.1.2",
     "ganache-core": "2.1.2",
     "mocha": "5.1.1",

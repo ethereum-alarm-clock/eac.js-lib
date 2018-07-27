@@ -1,27 +1,35 @@
 /* eslint class-methods-use-this: "off" */
 
-const Util = require("../util")()
+import * as initUtil from '../util';
 
-class RequestFactory {
-  constructor(address, web3) {
+const Util = initUtil();
+
+type Address = string;
+
+export default class RequestFactory {
+  public instance: any;
+  public web3: any;
+
+  constructor(address: Address, web3: any) {
     if (!Util.checkNotNullAddress(address)) {
-      throw new Error("Attempted to instantiate a RequestFactory class from a null address.")
+      throw new Error(`Cannot initialize a RequestFactory from address ${address}`);
     }
-    this.web3 = web3
+
+    this.web3 = web3;
     this.instance = this.web3.eth
       .contract(Util.getABI("RequestFactory"))
-      .at(address)
+      .at(address);
   }
 
-  get address() {
-    return this.instance.address
+  get address(): Address {
+    return this.instance.address;
   }
 
   /**
    * Conveinence methods
    */
 
-  isKnownRequest(requestAddress) {
+  isKnownRequest(requestAddress: Address) {
     return new Promise((resolve, reject) => {
       this.instance.isKnownRequest.call(requestAddress, (err, isKnown) => {
         if (!err) resolve(isKnown)
@@ -216,5 +224,3 @@ class RequestFactory {
   //   return new RequestFactory(address, web3)
   // }
 }
-
-module.exports = RequestFactory
