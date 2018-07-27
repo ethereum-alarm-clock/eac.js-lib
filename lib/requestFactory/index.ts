@@ -1,6 +1,6 @@
 /* eslint class-methods-use-this: "off" */
 
-import initUtil from '../util';
+import initUtil from "../util";
 
 type Address = string;
 
@@ -32,10 +32,10 @@ export default class RequestFactory {
   isKnownRequest(requestAddress: Address) {
     return new Promise((resolve, reject) => {
       this.instance.isKnownRequest.call(requestAddress, (err, isKnown) => {
-        if (!err) resolve(isKnown)
-        else reject(err)
-      })
-    })
+        if (!err) resolve(isKnown);
+        else reject(err);
+      });
+    });
   }
 
   validateRequestParams(addressArgs: string[], uintArgs: number[], endowment: number) {
@@ -45,11 +45,11 @@ export default class RequestFactory {
         uintArgs,
         endowment,
         (err: any, isValid: any) => {
-          if (!err) resolve(isValid)
-          else reject(err)
-        }
-      )
-    })
+          if (!err) resolve(isValid);
+          else reject(err);
+        },
+      );
+    });
   }
 
   /**
@@ -61,7 +61,7 @@ export default class RequestFactory {
    */
   parseIsValid(isValid: boolean[]): string[] {
     if (isValid.length != 6) {
-      throw new Error("Must pass an array of booleans returned by validateRequestParams()")
+      throw new Error("Must pass an array of booleans returned by validateRequestParams()");
     }
     const Errors = [
       "InsufficientEndowment",
@@ -70,44 +70,44 @@ export default class RequestFactory {
       "ExecutionWindowTooSoon",
       "CallGasTooHigh",
       "EmptyToAddress",
-    ]
+    ];
     const errors = [] as string[];
     isValid.forEach((boolIsTrue, index) => {
       if (!boolIsTrue) {
-        errors.push(Errors[index])
+        errors.push(Errors[index]);
       }
-    })
-    return errors
+    });
+    return errors;
   }
 
   async getRequestCreatedLogs(filter: any, startBlockNum: number, endBlockNum: number): Promise<any> {
-    const f = filter || {}
-    const curBlock = await Util.getBlockNumber(this.web3)
-    const start = startBlockNum || 1
-    const end = endBlockNum || "latest"
+    const f = filter || {};
+    const curBlock = await Util.getBlockNumber(this.web3);
+    const start = startBlockNum || 1;
+    const end = endBlockNum || "latest";
     const event = this.instance.RequestCreated(
       f,
-      { fromBlock: start, toBlock: end }
-    )
+      { fromBlock: start, toBlock: end },
+    );
     return new Promise((resolve, reject) => {
       event.get((err: any, logs: any[]) => {
         if (!err) {
-          resolve(logs)
-        } else reject(err)
-      })
-    })
+          resolve(logs);
+        } else reject(err);
+      });
+    });
   }
 
   watchRequestCreatedLogs(filter: any, startBlockNum: any, callback: Function): any {
-    const f = filter || {}
-    const curBlock = await Util.getBlockNumber(this.web3)
-    const start = startBlockNum || 1
+    const f = filter || {};
+    const curBlock = await Util.getBlockNumber(this.web3);
+    const start = startBlockNum || 1;
     const event = this.instance.RequestCreated(
       f,
-      { fromBlock: start, toBlock: 'latest' }
+      { fromBlock: start, toBlock: "latest" },
     );
-    event.watch(function(e,r){
-      callback(e,r);
+    event.watch(function(e, r){
+      callback(e, r);
     });
     return event;
   }
@@ -116,30 +116,30 @@ export default class RequestFactory {
     return new Promise((resolve, reject) => {
       event.stopWatching( (err, res) => {
         if (!err) {
-          resolve(res)
-        } else reject(err)
-      })
-    })
+          resolve(res);
+        } else reject(err);
+      });
+    });
   }
 
   async getRequestsByBucket(bucket: any): Promise<any[]> {
     const logs = await this.getRequestCreatedLogs({
       bucket,
-    }, 0, 0)
+    }, 0, 0);
     const requests = [] as any[];
     logs.forEach((log) => {
       requests.push({
         address: log.args.request,
         params: log.args.params,
-      })
-    })
-    return requests
+      });
+    });
+    return requests;
   }
 
   async watchRequestsByBucket(bucket: any, cb: any): any {
     return await this.watchRequestCreatedLogs({
       bucket,
-    }, '',
+    }, "",
       (error: any, log: any) => {
         if (log) {
           cb({
@@ -152,24 +152,24 @@ export default class RequestFactory {
 
   // Assume the temporalUnit is blocks if not timestamp.
   calcBucket(windowStart: number, temporalUnit: number) {
-    let bucketSize = 240  // block bucketsize
-    let sign = -1  // block sign
+    let bucketSize = 240;  // block bucketsize
+    let sign = -1;  // block sign
 
     if (temporalUnit == 2) {
-      bucketSize = 3600 // timestamp bucketsize
-      sign = 1 // timestamp sign
+      bucketSize = 3600; // timestamp bucketsize
+      sign = 1; // timestamp sign
     }
 
-    return sign * (windowStart - (windowStart % bucketSize))
+    return sign * (windowStart - (windowStart % bucketSize));
   }
 
   async getRequests(startBlock: number, endBlock: number) {
-    const logs = await this.getRequestCreatedLogs({}, startBlock, endBlock)
+    const logs = await this.getRequestCreatedLogs({}, startBlock, endBlock);
     const requests = [] as any[];
     logs.forEach((log: any) => {
-      requests.push(log.args.request)
-    })
-    return requests
+      requests.push(log.args.request);
+    });
+    return requests;
   }
 
   async watchRequests(startBlock: number, callback: Function) {
@@ -184,12 +184,12 @@ export default class RequestFactory {
   async getRequestsByOwner(owner: string, startBlock: number, endBlock: number) {
     const logs = await this.getRequestCreatedLogs({
       owner,
-    }, startBlock, endBlock)
+    }, startBlock, endBlock);
     const requests = [] as any[];
     logs.forEach((log: any) => {
-      requests.push(log.args.request)
-    })
-    return requests
+      requests.push(log.args.request);
+    });
+    return requests;
   }
 
   async watchRequestsByOwner(owner: string, startBlock: number, callback: Function): any {
@@ -197,7 +197,7 @@ export default class RequestFactory {
       owner,
     }, startBlock, (error: any, log: any) => {
       if (log) {
-        callback(log.args.request)
+        callback(log.args.request);
       }
     });
   }

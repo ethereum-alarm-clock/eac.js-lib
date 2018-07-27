@@ -1,20 +1,20 @@
-import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BigNumber from "bignumber.js";
+import * as ethUtil from "ethereumjs-util";
 
-import Constants from './constants';
+import Constants from "./constants";
 
 type Address = string;
 
 export default class Util {
   public web3: any;
-  
+
   constructor(web3: any) {
     this.web3 = web3;
   }
 
   private checkWeb3(web3: any): any {
     if (!web3 && !this.web3) {
-      throw new Error('[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.');
+      throw new Error("[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.");
     }
     return web3 || this.web3;
   }
@@ -33,29 +33,29 @@ export default class Util {
     return new Promise((resolve: any, reject: any) => {
       web3.version.getNetwork((err: any, netId: any) => {
         switch (netId) {
-          case '1':
+          case "1":
             // mainnet
             resolve(false); break;
-          case '3':
+          case "3":
             // ropsten
             resolve(true); break;
-          case '4':
+          case "4":
             // rinkeby
             resolve(false); break;
-          case '42':
+          case "42":
             // kovan
             resolve(true); break;
-          case '1001':
+          case "1001":
             // docker
             resolve(true); break;
-          case '1002':
+          case "1002":
             // development
             resolve(true); break;
           default:
             resolve(false);
         }
-      })
-    })
+      });
+    });
   }
 
   checkNotNullAddress(address: Address): boolean {
@@ -76,8 +76,8 @@ export default class Util {
         } else {
           reject(err);
         }
-      })
-    })
+      });
+    });
   }
 
   getABI(name: string): {} {
@@ -94,8 +94,8 @@ export default class Util {
         } else {
           reject(err);
         }
-      })
-    })
+      });
+    });
   }
 
   getBlockNumber(web3: any): Promise<number> {
@@ -108,8 +108,8 @@ export default class Util {
         } else {
           reject(err);
         }
-      })
-    })
+      });
+    });
   }
 
   getGasPrice(web3: any): Promise<number> {
@@ -122,27 +122,27 @@ export default class Util {
         } else {
           reject(err);
         }
-      })
-    })
+      });
+    });
   }
 
   getTimestamp(web3: any): Promise<number> {
     web3 = this.checkWeb3(web3);
 
     return new Promise((resolve: any, reject: any) => {
-      web3.eth.getBlock('latest', (err: any, block: any) => {
+      web3.eth.getBlock("latest", (err: any, block: any) => {
         if (!err) {
           resolve(block.timestamp);
         } else {
           reject(err);
         }
-      })
-    })
+      });
+    });
   }
 
   getTimestampForBlock(web3: any, blockNum: any): Promise<number> {
     web3 = this.checkWeb3(web3);
-    
+
     this.getBlockNumber(web3).then((curBlockNum) => {
       if (blockNum > curBlockNum) {
         throw new Error(`[eac.js-lib] Passed blockNum ${blockNum} is greater than current blockNum ${curBlockNum}`);
@@ -155,18 +155,18 @@ export default class Util {
           } else {
             reject(err);
           }
-        })
-      })
-    })
+        });
+      });
+    });
   }
 
   getTxRequestFromReceipt(receipt: any): Address {
     const newRequestLog = receipt.logs.find((log) => {
       return log.topics[0] === Constants.NEWREQUESTLOG;
-    })
+    });
 
     if (!newRequestLog) {
-      throw new Error('[eac.js-lib] Invalid receipt passed!');
+      throw new Error("[eac.js-lib] Invalid receipt passed!");
     }
 
     return "0x" + newRequestLog.data.slice(-40);
@@ -178,10 +178,10 @@ export default class Util {
     return new Promise((resolve: any, reject: any) => {
       web3.version.getNetwork((err: any, netId: any) => {
         switch (netId) {
-          case '1':
+          case "1":
             reject("Not implemented on mainnet.");
             break;
-          case '3':
+          case "3":
             resolve("ropsten");
             break;
           case "4":
@@ -199,8 +199,8 @@ export default class Util {
           default:
             resolve("tester");
         }
-      })
-    })
+      });
+    });
   }
 
   waitForTransactionToBeMined(web3: any, txHash: any, interval: any): Promise<any> {
@@ -213,19 +213,19 @@ export default class Util {
           reject(err);
         } else if (receipt === null) {
           setTimeout(() => {
-            txReceiptAsync(txHash, resolve, reject)
+            txReceiptAsync(txHash, resolve, reject);
           }, interval);
         } else {
           resolve(receipt);
         }
-      })
-    }
+      });
+    };
 
     return new Promise((resolve: any, reject: any) => {
       txReceiptAsync(txHash, resolve, reject);
-    })
+    });
   }
-} 
+}
 
 // module.exports = (web3) => {
 //   if (!web3) {

@@ -1,21 +1,29 @@
-const { BigNumber } = require("bignumber.js")
-const RequestData = require("./requestData")
-const Constants = require("../constants")
-const Util = require("../util")()
+import BigNumber from "bignumber.js";
 
-class TxRequest {
+import Constants from "../constants";
+import initUtil from "../util";
+import RequestData from "./requestData";
+
+const Util = new initUtil(null);
+
+export default class TxRequest {
+  public data: RequestData = {} as RequestData;
+  public instance: any;
+  public web3: any;
+
   constructor(address, web3) {
     if (!Util.checkNotNullAddress(address)) {
-      throw new Error("Attempted to instantiate a TxRequest class from a null address.")
+      throw new Error("Attempted to instantiate a TxRequest class from a null address.");
     }
-    this.web3 = web3
+
+    this.web3 = web3;
     this.instance = this.web3.eth
       .contract(Util.getABI("TransactionRequestCore"))
-      .at(address)
+      .at(address);
   }
 
   get address() {
-    return this.instance.address
+    return this.instance.address;
   }
 
   /**
@@ -23,63 +31,63 @@ class TxRequest {
    */
 
   get claimWindowSize() {
-    this.checkData()
-    return this.data.schedule.claimWindowSize
+    this.checkData();
+    return this.data.schedule.claimWindowSize;
   }
 
   get claimWindowStart() {
-    this.checkData()
-    return this.windowStart.minus(this.freezePeriod).minus(this.claimWindowSize)
+    this.checkData();
+    return this.windowStart.minus(this.freezePeriod).minus(this.claimWindowSize);
   }
 
   get claimWindowEnd() {
-    this.checkData()
-    return this.claimWindowStart.plus(this.claimWindowSize)
+    this.checkData();
+    return this.claimWindowStart.plus(this.claimWindowSize);
   }
 
   get freezePeriod() {
-    this.checkData()
-    return this.data.schedule.freezePeriod
+    this.checkData();
+    return this.data.schedule.freezePeriod;
   }
 
   get freezePeriodStart() {
-    this.checkData()
-    return this.windowStart.plus(this.claimWindowSize)
+    this.checkData();
+    return this.windowStart.plus(this.claimWindowSize);
   }
 
   get freezePeriodEnd() {
-    this.checkData()
-    return this.claimWindowEnd.plus(this.freezePeriod)
+    this.checkData();
+    return this.claimWindowEnd.plus(this.freezePeriod);
   }
 
   get temporalUnit() {
-    this.checkData()
-    return this.data.schedule.temporalUnit
+    this.checkData();
+    return this.data.schedule.temporalUnit;
   }
 
   get windowSize() {
-    this.checkData()
-    return this.data.schedule.windowSize
+    this.checkData();
+    return this.data.schedule.windowSize;
   }
 
   get windowStart() {
-    this.checkData()
-    return this.data.schedule.windowStart
+    this.checkData();
+    return this.data.schedule.windowStart;
   }
 
   get reservedWindowSize() {
-    this.checkData()
-    return this.data.schedule.reservedWindowSize
+    this.checkData();
+    return this.data.schedule.reservedWindowSize;
   }
 
   get reservedWindowEnd() {
-    this.checkData()
-    return this.windowStart.plus(this.reservedWindowSize)
+    this.checkData();
+    return this.windowStart.plus(this.reservedWindowSize);
   }
 
   get executionWindowEnd() {
-    this.checkData()
-    return this.windowStart.plus(this.windowSize)
+    this.checkData();
+    return this.windowStart.plus(this.windowSize);
   }
 
   /**
@@ -88,54 +96,54 @@ class TxRequest {
 
   async now() {
     if (this.temporalUnit == 1) {
-      return new BigNumber(await Util.getBlockNumber(this.web3))
+      return new BigNumber(await Util.getBlockNumber(this.web3));
     } else if (this.temporalUnit == 2) {
-      const timestamp = await Util.getTimestamp(this.web3)
-      return new BigNumber(timestamp)
+      const timestamp = await Util.getTimestamp(this.web3);
+      return new BigNumber(timestamp);
     }
-    throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`)
+    throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`);
   }
 
   async beforeClaimWindow() {
-    const now = await this.now()
-    return this.claimWindowStart.greaterThan(now)
+    const now = await this.now();
+    return this.claimWindowStart.greaterThan(now);
   }
 
   async inClaimWindow() {
-    const now = await this.now()
+    const now = await this.now();
     return (
       this.claimWindowStart.lessThanOrEqualTo(now) &&
       this.claimWindowEnd.greaterThan(now)
-    )
+    );
   }
 
   async inFreezePeriod() {
-    const now = await this.now()
+    const now = await this.now();
     return (
       this.claimWindowEnd.lessThanOrEqualTo(now) &&
       this.freezePeriodEnd.greaterThan(now)
-    )
+    );
   }
 
   async inExecutionWindow() {
-    const now = await this.now()
+    const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
       this.executionWindowEnd.greaterThanOrEqualTo(now)
-    )
+    );
   }
 
   async inReservedWindow() {
-    const now = await this.now()
+    const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
       this.reservedWindowEnd.greaterThan(now)
-    )
+    );
   }
 
   async afterExecutionWindow() {
-    const now = await this.now()
-    return this.executionWindowEnd.lessThan(now)
+    const now = await this.now();
+    return this.executionWindowEnd.lessThan(now);
   }
 
   /**
@@ -146,41 +154,41 @@ class TxRequest {
   }
 
   async executedAt() {
-    return (await this.getExecutedEvent()).blockNumber
+    return (await this.getExecutedEvent()).blockNumber;
   }
 
   getExecutedEvent() {
     if (!this.wasCalled) {
-      return {blockNumber: 0}
+      return {blockNumber: 0};
     }
-    const events = this.instance.allEvents({fromBlock: 0, toBlock: 'latest'})
+    const events = this.instance.allEvents({fromBlock: 0, toBlock: "latest"});
     return new Promise((resolve, reject) => {
       events.get((err, logs) => {
         if (!err) {
-          const Executed = logs.filter(log => log.topics[0] === '0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9')
+          const Executed = logs.filter((log) => log.topics[0] === "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9");
           resolve({
             blockNumber: Executed[0].blockNumber,
-            bounty: this.web3.toDecimal('0x' + Executed[0].data.slice(2, 66)),
-            fee: this.web3.toDecimal('0x' + Executed[0].data.slice(67, 130)),
-            estimatedGas: this.web3.toDecimal('0x' + Executed[0].data.slice(131, 194))
-          })
+            bounty: this.web3.toDecimal("0x" + Executed[0].data.slice(2, 66)),
+            fee: this.web3.toDecimal("0x" + Executed[0].data.slice(67, 130)),
+            estimatedGas: this.web3.toDecimal("0x" + Executed[0].data.slice(131, 194)),
+          });
         }
-        else reject(err)
-      })
-    })
+        else reject(err);
+      });
+    });
   }
 
   getBucket() {
-    let sign = -1
+    let sign = -1;
     let bucketSize;
 
     if (this.temporalUnit == 1) {
-      bucketSize = 240
+      bucketSize = 240;
     } else if (this.temporalUnit == 2) {
-      bucketSize = 3600
-      sign = 1
+      bucketSize = 3600;
+      sign = 1;
     }
-    return sign * this.windowStart - (this.windowStart % bucketSize)
+    return sign * this.windowStart - (this.windowStart % bucketSize);
   }
 
   /**
@@ -188,29 +196,29 @@ class TxRequest {
    */
 
   get claimedBy() {
-    this.checkData()
-    return this.data.claimData.claimedBy
+    this.checkData();
+    return this.data.claimData.claimedBy;
   }
 
   get isClaimed() {
-    this.checkData()
-    return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS
+    this.checkData();
+    return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS;
   }
 
   isClaimedBy(address) {
-    this.checkData()
-    return this.claimedBy === address
+    this.checkData();
+    return this.claimedBy === address;
   }
 
   get requiredDeposit() {
-    this.checkData()
-    return this.data.claimData.requiredDeposit
+    this.checkData();
+    return this.data.claimData.requiredDeposit;
   }
 
   async claimPaymentModifier() {
-    const now = await this.now()
-    const elapsed = now.minus(this.claimWindowStart)
-    return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize)
+    const now = await this.now();
+    const elapsed = now.minus(this.claimWindowStart);
+    return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize);
   }
 
   /**
@@ -218,23 +226,23 @@ class TxRequest {
    */
 
   get isCancelled() {
-    this.checkData()
-    return this.data.meta.isCancelled
+    this.checkData();
+    return this.data.meta.isCancelled;
   }
 
   get wasCalled() {
-    this.checkData()
-    return this.data.meta.wasCalled
+    this.checkData();
+    return this.data.meta.wasCalled;
   }
 
   get wasSuccessful() {
-    this.checkData()
-      return this.data.meta.wasSuccessful
+    this.checkData();
+    return this.data.meta.wasSuccessful;
   }
 
   get owner() {
-    this.checkData()
-    return this.data.meta.owner
+    this.checkData();
+    return this.data.meta.owner;
   }
 
   /**
@@ -242,33 +250,33 @@ class TxRequest {
    */
 
   get toAddress() {
-    this.checkData()
-    return this.data.txData.toAddress
+    this.checkData();
+    return this.data.txData.toAddress;
   }
 
   get callGas() {
-    this.checkData()
-    return this.data.txData.callGas
+    this.checkData();
+    return this.data.txData.callGas;
   }
 
   get callValue() {
-    this.checkData()
-    return this.data.txData.callValue
+    this.checkData();
+    return this.data.txData.callValue;
   }
 
   get gasPrice() {
-    this.checkData()
-    return this.data.txData.gasPrice
+    this.checkData();
+    return this.data.txData.gasPrice;
   }
 
   get fee() {
-    this.checkData()
-    return this.data.paymentData.fee
+    this.checkData();
+    return this.data.paymentData.fee;
   }
 
   get bounty() {
-    this.checkData()
-    return this.data.paymentData.bounty
+    this.checkData();
+    return this.data.paymentData.bounty;
   }
 
   /**
@@ -278,10 +286,10 @@ class TxRequest {
   callData() {
     return new Promise((resolve, reject) => {
       this.instance.callData.call((err, callData) => {
-        if (!err) resolve(callData)
-        else reject(err)
-      })
-    })
+        if (!err) resolve(callData);
+        else reject(err);
+      });
+    });
   }
 
   /**
@@ -289,16 +297,16 @@ class TxRequest {
    */
 
   async fillData() {
-    const requestData = await RequestData.from(this.instance)
-    this.data = requestData
-    return true
+    const requestData = await RequestData.from(this.instance);
+    this.data = requestData;
+    return true;
   }
 
   async refreshData() {
     if (!this.data) {
-      return this.fillData()
+      return this.fillData();
     }
-    return this.data.refresh()
+    return this.data.refresh();
   }
 
   /**
@@ -306,15 +314,15 @@ class TxRequest {
    */
 
   get claimData() {
-    return this.instance.claim.getData()
+    return this.instance.claim.getData();
   }
 
   get executeData() {
-    return this.instance.execute.getData()
+    return this.instance.execute.getData();
   }
 
   get cancelData() {
-    return this.instance.cancel.getData()
+    return this.instance.cancel.getData();
   }
 
   /**
@@ -327,14 +335,14 @@ class TxRequest {
   claim(params) {
     return new Promise((resolve, reject) => {
       this.instance.claim(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(e => reject(e))
+            .then((receipt) => resolve(receipt))
+            .catch((e) => reject(e));
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -343,14 +351,14 @@ class TxRequest {
   execute(params) {
     return new Promise((resolve, reject) => {
       this.instance.execute(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(e => reject(e))
+            .then((receipt) => resolve(receipt))
+            .catch((e) => reject(e));
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -359,14 +367,14 @@ class TxRequest {
   cancel(params) {
     return new Promise((resolve, reject) => {
       this.instance.cancel(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
-            .then(receipt => resolve(receipt))
-            .catch(e => reject(e))
+            .then((receipt) => resolve(receipt))
+            .catch((e) => reject(e));
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -378,14 +386,14 @@ class TxRequest {
   proxy(toAddress, data, params) {
     return new Promise((resolve, reject) => {
       this.instance.proxy(toAddress, data, params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
             .then(resolve) // resolves the receipt
-            .catch(reject) // rejects the error
+            .catch(reject); // rejects the error
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -395,53 +403,53 @@ class TxRequest {
   refundClaimDeposit(params) {
     return new Promise((resolve, reject) => {
       this.instance.refundClaimDeposit(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
             .then(resolve)
-            .catch(reject)
+            .catch(reject);
         }
-      })
-    })
+      });
+    });
   }
 
   sendFee(params) {
     return new Promise((resolve, reject) => {
       this.instance.sendFee(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
             .then(resolve)
-            .catch(reject)
+            .catch(reject);
         }
-      })
-    })
+      });
+    });
   }
 
   sendBounty(params) {
     return new Promise((resolve, reject) => {
       this.instance.sendBounty(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
             .then(resolve)
-            .catch(reject)
+            .catch(reject);
         }
-      })
-    })
+      });
+    });
   }
 
   sendOwnerEther(params) {
     return new Promise((resolve, reject) => {
       this.instance.sendOwnerEther(params, (err, txHash) => {
-        if (err) reject(err)
+        if (err) reject(err);
         else {
           Util.waitForTransactionToBeMined(this.web3, txHash)
             .then(resolve)
-            .catch(reject)
+            .catch(reject);
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -449,8 +457,8 @@ class TxRequest {
    */
 
   async getBalance() {
-    const bal = await Util.getBalance(this.web3, this.address)
-    return new BigNumber(bal)
+    const bal = await Util.getBalance(this.web3, this.address);
+    return new BigNumber(bal);
   }
 
   /**
@@ -458,9 +466,9 @@ class TxRequest {
    */
   checkData() {
     if (!this.data) {
-      throw new Error('Data has not been filled! Please call `txRequest.fillData()` before using this method.')
+      throw new Error("Data has not been filled! Please call `txRequest.fillData()` before using this method.");
     }
   }
 }
 
-module.exports = TxRequest
+module.exports = TxRequest;
