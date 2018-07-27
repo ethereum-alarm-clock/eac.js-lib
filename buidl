@@ -1,0 +1,1165 @@
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+define("constants", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = {
+        ABORTEDLOG: "0xc008bc849b42227c61d5063a1313ce509a6e99211bfd59e827e417be6c65c81b",
+        EQ_HEX: "0x3d3d",
+        EXECUTEDLOG: "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9",
+        GTE_HEX: "0x3e3d",
+        GT_HEX: "0x3e",
+        LTE_HEX: "0x3c3d",
+        LT_HEX: "0x3c",
+        NEWREQUESTLOG: "0x2749295aa7ffdbd4d16719dc03d592cd081eebd9bb790ceedce201a40675fc03",
+        NULL_ADDRESS: "0x0000000000000000000000000000000000000000",
+    };
+});
+define("util", ["require", "exports", "ethereumjs-util", "constants"], function (require, exports, ethUtil, constants_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    ethUtil = __importStar(ethUtil);
+    constants_1 = __importDefault(constants_1);
+    var UTIL_ERROR;
+    (function (UTIL_ERROR) {
+        UTIL_ERROR["WEB3_ERROR"] = "[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.";
+        UTIL_ERROR["DEPRECATED"] = "[eac.js-lib] Deprecated.";
+    })(UTIL_ERROR || (UTIL_ERROR = {}));
+    class Util {
+        constructor(web3) {
+            this.web3 = web3;
+        }
+        calcEndowment(gas, value, gasPrice, fee, bounty) {
+            return bounty.add(fee).add(gas.times(gasPrice)).add(gasPrice.times(180000)).add(value);
+        }
+        checkForUnlockedAccount() {
+            throw new Error(UTIL_ERROR.DEPRECATED);
+        }
+        checkNetworkID(web3) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.version.getNetwork((err, netId) => {
+                    switch (netId) {
+                        case "1":
+                            // mainnet
+                            resolve(false);
+                            break;
+                        case "3":
+                            // ropsten
+                            resolve(true);
+                            break;
+                        case "4":
+                            // rinkeby
+                            resolve(false);
+                            break;
+                        case "42":
+                            // kovan
+                            resolve(true);
+                            break;
+                        case "1001":
+                            // docker
+                            resolve(true);
+                            break;
+                        case "1002":
+                            // development
+                            resolve(true);
+                            break;
+                        default:
+                            resolve(false);
+                    }
+                });
+            });
+        }
+        checkNotNullAddress(address) {
+            return address !== constants_1.default.NULL_ADDRESS;
+        }
+        checkValidAddress(address) {
+            return ethUtil.isValidAddress(address);
+        }
+        estimateGas(web3, opts) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.eth.estimateGas(opts, (err, gas) => {
+                    if (!err) {
+                        resolve(gas);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getABI(name) {
+            return require(`${__dirname}/build/abi/${name}.json`);
+        }
+        getBalance(web3, address) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.eth.getBalance(address, (err, bal) => {
+                    if (!err) {
+                        resolve(bal);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getBlockNumber(web3) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.eth.getBlockNumber((err, blockNum) => {
+                    if (!err) {
+                        resolve(blockNum);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getGasPrice(web3) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.eth.getGasPrice((err, gasPrice) => {
+                    if (!err) {
+                        resolve(gasPrice);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getTimestamp(web3) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.eth.getBlock("latest", (err, block) => {
+                    if (!err) {
+                        resolve(block.timestamp);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getTimestampForBlock(web3, blockNum) {
+            web3 = this.checkWeb3(web3);
+            this.getBlockNumber(web3).then((curBlockNum) => {
+                if (blockNum > curBlockNum) {
+                    throw new Error(`[eac.js-lib] Passed blockNum ${blockNum} is greater than current blockNum ${curBlockNum}`);
+                }
+                return new Promise((resolve, reject) => {
+                    web3.eth.getBlock(blockNum, (err, block) => {
+                        if (!err) {
+                            resolve(block.timestamp);
+                        }
+                        else {
+                            reject(err);
+                        }
+                    });
+                });
+            });
+        }
+        getTxRequestFromReceipt(receipt) {
+            const newRequestLog = receipt.logs.find((log) => {
+                return log.topics[0] === constants_1.default.NEWREQUESTLOG;
+            });
+            if (!newRequestLog) {
+                throw new Error("[eac.js-lib] Invalid receipt passed!");
+            }
+            return "0x" + newRequestLog.data.slice(-40);
+        }
+        getChainName(web3) {
+            web3 = this.checkWeb3(web3);
+            return new Promise((resolve, reject) => {
+                web3.version.getNetwork((err, netId) => {
+                    switch (netId) {
+                        case "1":
+                            reject("Not implemented on mainnet.");
+                            break;
+                        case "3":
+                            resolve("ropsten");
+                            break;
+                        case "4":
+                            resolve("rinkeby");
+                            break;
+                        case "42":
+                            resolve("kovan");
+                            break;
+                        case "1001":
+                            resolve("docker");
+                            break;
+                        case "1002":
+                            resolve("development");
+                            break;
+                        default:
+                            resolve("tester");
+                    }
+                });
+            });
+        }
+        waitForTransactionToBeMined(web3, txHash, interval) {
+            interval = interval || 500;
+            web3 = this.checkWeb3(web3);
+            const txReceiptAsync = (txHash2, resolve, reject) => {
+                web3.eth.getTransactionReceipt(txHash2, (err, receipt) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else if (receipt === null) {
+                        setTimeout(() => {
+                            txReceiptAsync(txHash2, resolve, reject);
+                        }, interval);
+                    }
+                    else {
+                        resolve(receipt);
+                    }
+                });
+            };
+            return new Promise((resolve, reject) => {
+                txReceiptAsync(txHash, resolve, reject);
+            });
+        }
+        checkWeb3(web3) {
+            if (!web3 && !this.web3) {
+                throw new Error(UTIL_ERROR.WEB3_ERROR);
+            }
+            return web3 || this.web3;
+        }
+    }
+    exports.default = Util;
+});
+// module.exports = (web3) => {
+//   if (!web3) {
+//     return {
+//       calcEndowment,
+//       checkForUnlockedAccount,
+//       checkNetworkID,
+//       checkNotNullAddress,
+//       checkValidAddress,
+//       estimateGas,
+//       getABI,
+//       getBalance,
+//       getBlockNumber,
+//       getChainName,
+//       getGasPrice,
+//       getTimestamp,
+//       getTimestampForBlock,
+//       getTxRequestFromReceipt,
+//       waitForTransactionToBeMined,
+//     }
+//   }
+//   return {
+//     calcEndowment,
+//     checkForUnlockedAccount: () => checkForUnlockedAccount(web3),
+//     checkNetworkID: () => checkNetworkID(web3),
+//     checkNotNullAddress,
+//     checkValidAddress,
+//     estimateGas: opts => estimateGas(web3, opts),
+//     getABI,
+//     getBalance: address => getBalance(web3, address),
+//     getBlockNumber: () => getBlockNumber(web3),
+//     getChainName: () => getChainName(web3),
+//     getGasPrice: () => getGasPrice(web3),
+//     getTimestamp: () => getTimestamp(web3),
+//     getTimestampForBlock: blockNum => getTimestampForBlock(web3, blockNum),
+//     getTxRequestFromReceipt,
+//     waitForTransactionToBeMined: txHash =>
+//       waitForTransactionToBeMined(web3, txHash),
+//   }
+// }
+/* eslint class-methods-use-this: "off" */
+define("requestFactory/index", ["require", "exports", "util"], function (require, exports, util_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    util_1 = __importDefault(util_1);
+    const Util = new util_1.default(null);
+    class RequestFactory {
+        constructor(address, web3) {
+            if (!Util.checkNotNullAddress(address)) {
+                throw new Error(`Cannot initialize a RequestFactory from address ${address}`);
+            }
+            this.web3 = web3;
+            this.instance = this.web3.eth
+                .contract(Util.getABI("RequestFactory"))
+                .at(address);
+        }
+        get address() {
+            return this.instance.address;
+        }
+        /**
+         * Conveinence methods
+         */
+        isKnownRequest(requestAddress) {
+            return new Promise((resolve, reject) => {
+                this.instance.isKnownRequest.call(requestAddress, (err, isKnown) => {
+                    if (!err) {
+                        resolve(isKnown);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        validateRequestParams(addressArgs, uintArgs, endowment) {
+            return new Promise((resolve, reject) => {
+                this.instance.validateRequestParams.call(addressArgs, uintArgs, endowment, (err, isValid) => {
+                    if (!err) {
+                        resolve(isValid);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        /**
+         * Parses the boolean returned by validateRequestParams() and returns the
+         * reason validation failed.
+         * @param {Array<boolean>} isValid The array returned by this.validateRequestParams()
+         * @return {Array<String>} An array of the strings of validation errors or an
+         * array of length 0 if no errors.
+         */
+        parseIsValid(isValid) {
+            if (isValid.length !== 6) {
+                throw new Error("Must pass an array of booleans returned by validateRequestParams()");
+            }
+            const Errors = [
+                "InsufficientEndowment",
+                "ReservedWindowBiggerThanExecutionWindow",
+                "InvalidTemporalUnit",
+                "ExecutionWindowTooSoon",
+                "CallGasTooHigh",
+                "EmptyToAddress",
+            ];
+            const errors = [];
+            isValid.forEach((boolIsTrue, index) => {
+                if (!boolIsTrue) {
+                    errors.push(Errors[index]);
+                }
+            });
+            return errors;
+        }
+        getRequestCreatedLogs(filter, startBlockNum, endBlockNum) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const f = filter || {};
+                const curBlock = yield Util.getBlockNumber(this.web3);
+                const start = startBlockNum || 1;
+                const end = endBlockNum || "latest";
+                const event = this.instance.RequestCreated(f, { fromBlock: start, toBlock: end });
+                return new Promise((resolve, reject) => {
+                    event.get((err, logs) => {
+                        if (!err) {
+                            resolve(logs);
+                        }
+                        else {
+                            reject(err);
+                        }
+                    });
+                });
+            });
+        }
+        watchRequestCreatedLogs(filter, startBlockNum, callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const f = filter || {};
+                const curBlock = yield Util.getBlockNumber(this.web3);
+                const start = startBlockNum || 1;
+                const event = this.instance.RequestCreated(f, { fromBlock: start, toBlock: "latest" });
+                event.watch((err, res) => {
+                    callback(err, res);
+                });
+                return event;
+            });
+        }
+        stopWatch(event) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return new Promise((resolve, reject) => {
+                    event.stopWatching((err, res) => {
+                        if (!err) {
+                            resolve(res);
+                        }
+                        else {
+                            reject(err);
+                        }
+                    });
+                });
+            });
+        }
+        getRequestsByBucket(bucket) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const logs = yield this.getRequestCreatedLogs({
+                    bucket,
+                }, 0, 0);
+                const requests = [];
+                logs.forEach((log) => {
+                    requests.push({
+                        address: log.args.request,
+                        params: log.args.params,
+                    });
+                });
+                return requests;
+            });
+        }
+        watchRequestsByBucket(bucket, cb) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return yield this.watchRequestCreatedLogs({
+                    bucket,
+                }, "", (error, log) => {
+                    if (log) {
+                        cb({
+                            address: log.args.request,
+                            params: log.args.params,
+                        });
+                    }
+                });
+            });
+        }
+        // Assume the temporalUnit is blocks if not timestamp.
+        calcBucket(windowStart, temporalUnit) {
+            let bucketSize = 240; // block bucketsize
+            let sign = -1; // block sign
+            if (temporalUnit === 2) {
+                bucketSize = 3600; // timestamp bucketsize
+                sign = 1; // timestamp sign
+            }
+            return sign * (windowStart - (windowStart % bucketSize));
+        }
+        getRequests(startBlock, endBlock) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const logs = yield this.getRequestCreatedLogs({}, startBlock, endBlock);
+                const requests = [];
+                logs.forEach((log) => {
+                    requests.push(log.args.request);
+                });
+                return requests;
+            });
+        }
+        watchRequests(startBlock, callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return yield this.watchRequestCreatedLogs({}, startBlock, (error, log) => {
+                    if (log) {
+                        callback(log.args.request);
+                    }
+                });
+            });
+        }
+        getRequestsByOwner(owner, startBlock, endBlock) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const logs = yield this.getRequestCreatedLogs({
+                    owner,
+                }, startBlock, endBlock);
+                const requests = [];
+                logs.forEach((log) => {
+                    requests.push(log.args.request);
+                });
+                return requests;
+            });
+        }
+        watchRequestsByOwner(owner, startBlock, callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return yield this.watchRequestCreatedLogs({
+                    owner,
+                }, startBlock, (error, log) => {
+                    if (log) {
+                        callback(log.args.request);
+                    }
+                });
+            });
+        }
+    }
+    exports.default = RequestFactory;
+});
+define("scheduling/index", ["require", "exports", "bignumber.js", "util"], function (require, exports, bignumber_js_1, util_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    bignumber_js_1 = __importDefault(bignumber_js_1);
+    util_2 = __importDefault(util_2);
+    const Util = new util_2.default(null);
+    class Scheduler {
+        constructor(bSchedulerAddress, tSchedulerAddress, web3) {
+            this.sender = "";
+            this.gasLimit = 0;
+            this.sendValue = 0;
+            this.web3 = web3;
+            try {
+                const BlockSchedulerABI = Util.getABI("BlockScheduler");
+                const TimestampSchedulerABI = Util.getABI("TimestampScheduler");
+                this.blockScheduler = web3.eth
+                    .contract(BlockSchedulerABI)
+                    .at(bSchedulerAddress);
+                this.timestampScheduler = web3.eth
+                    .contract(TimestampSchedulerABI)
+                    .at(tSchedulerAddress);
+            }
+            catch (err) {
+                throw new Error(err);
+            }
+        }
+        getFactoryAddress() {
+            return new Promise((resolve, reject) => {
+                this.blockScheduler.factoryAddress.call((err, address) => {
+                    if (!err) {
+                        resolve(address);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        initSender(opts) {
+            this.sender = opts.from;
+            this.gasLimit = opts.gas;
+            this.sendValue = opts.value;
+            return true;
+        }
+        setGas(gasLimit) {
+            this.gasLimit = gasLimit;
+            return true;
+        }
+        setSender(address) {
+            // TODO verfiy with ethUtil
+            this.sender = address;
+            return true;
+        }
+        setSendValue(value) {
+            this.sendValue = value;
+            return true;
+        }
+        blockSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, fee, bounty, requiredDeposit, waitForMined = true) {
+            return new Promise((resolve, reject) => {
+                this.blockScheduler.schedule.sendTransaction(toAddress, callData, [
+                    callGas,
+                    callValue,
+                    windowSize,
+                    windowStart,
+                    gasPrice,
+                    fee,
+                    bounty,
+                    requiredDeposit,
+                ], {
+                    from: this.sender,
+                    gas: this.gasLimit,
+                    value: this.sendValue,
+                }, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
+                        if (waitForMined) {
+                            miningPromise
+                                .then((receipt) => resolve(receipt))
+                                .catch((e) => reject(e));
+                        }
+                        else {
+                            resolve({
+                                miningPromise,
+                                transactionHash: txHash,
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        timestampSchedule(toAddress, callData, callGas, callValue, windowSize, windowStart, gasPrice, fee, bounty, requiredDeposit, waitForMined = true) {
+            return new Promise((resolve, reject) => {
+                this.timestampScheduler.schedule(toAddress, callData, [
+                    callGas,
+                    callValue,
+                    windowSize,
+                    windowStart,
+                    gasPrice,
+                    fee,
+                    bounty,
+                    requiredDeposit,
+                ], {
+                    from: this.sender,
+                    gas: this.gasLimit,
+                    value: this.sendValue,
+                }, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
+                        if (waitForMined) {
+                            miningPromise
+                                .then((receipt) => resolve(receipt))
+                                .catch((e) => reject(e));
+                        }
+                        else {
+                            resolve({
+                                miningPromise,
+                                transactionHash: txHash,
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        calcEndowment(callGas, callValue, gasPrice, fee, bounty) {
+            // Convert the value to a bignumber works even if it's already one.
+            const callGasBN = new bignumber_js_1.default(callGas);
+            const callValueBN = new bignumber_js_1.default(callValue);
+            const gasPriceBN = new bignumber_js_1.default(gasPrice);
+            const feeBN = new bignumber_js_1.default(fee);
+            const bountyBN = new bignumber_js_1.default(bounty);
+            return bountyBN
+                .plus(feeBN.times(2))
+                .plus(callGasBN.times(gasPrice))
+                .plus(gasPriceBN.times(180000))
+                .plus(callValueBN);
+        }
+    }
+    exports.default = Scheduler;
+});
+define("txRequest/requestData", ["require", "exports", "bignumber.js"], function (require, exports, bignumber_js_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    bignumber_js_2 = __importDefault(bignumber_js_2);
+    class RequestData {
+        constructor(data, txRequest) {
+            this.claimData = {};
+            this.meta = {};
+            this.paymentData = {};
+            this.schedule = {};
+            this.txData = {};
+            if (typeof data === "undefined" || typeof txRequest === "undefined") {
+                throw new Error("Cannot call the constructor directly.");
+            }
+            this.txRequest = txRequest;
+            this.fill(data);
+        }
+        static from(txRequest) {
+            return new Promise((resolve, reject) => {
+                txRequest.requestData.call({ gas: 3000000 }, (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(new RequestData(data, txRequest));
+                    }
+                });
+            });
+        }
+        fill(data) {
+            this.claimData = {
+                claimDeposit: new bignumber_js_2.default(data[2][0]),
+                claimedBy: data[0][0],
+                paymentModifier: parseInt(data[3][0], 10),
+                requiredDeposit: new bignumber_js_2.default(data[2][14]),
+            };
+            this.meta = {
+                createdBy: data[0][1],
+                isCancelled: data[1][0],
+                owner: data[0][2],
+                wasCalled: data[1][1],
+                wasSuccessful: data[1][2],
+            };
+            this.paymentData = {
+                bounty: new bignumber_js_2.default(data[2][3]),
+                bountyBenefactor: data[0][4],
+                bountyOwed: new bignumber_js_2.default(data[2][4]),
+                fee: new bignumber_js_2.default(data[2][1]),
+                feeOwed: new bignumber_js_2.default(data[2][2]),
+                feeRecipient: data[0][3],
+            };
+            this.schedule = {
+                claimWindowSize: new bignumber_js_2.default(data[2][5]),
+                freezePeriod: new bignumber_js_2.default(data[2][6]),
+                reservedWindowSize: new bignumber_js_2.default(data[2][7]),
+                temporalUnit: parseInt(data[2][8], 10),
+                windowSize: new bignumber_js_2.default(data[2][9]),
+                windowStart: new bignumber_js_2.default(data[2][10]),
+            };
+            this.txData = {
+                callGas: new bignumber_js_2.default(data[2][11]),
+                callValue: new bignumber_js_2.default(data[2][12]),
+                gasPrice: new bignumber_js_2.default(data[2][13]),
+                toAddress: data[0][5],
+            };
+        }
+        refresh() {
+            return new Promise((resolve, reject) => {
+                this.txRequest.requestData.call((err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        this.fill(data);
+                        resolve(true);
+                    }
+                });
+            });
+        }
+    }
+    exports.default = RequestData;
+});
+define("txRequest/txRequest", ["require", "exports", "bignumber.js", "constants", "util", "txRequest/requestData"], function (require, exports, bignumber_js_3, constants_2, util_3, requestData_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    bignumber_js_3 = __importDefault(bignumber_js_3);
+    constants_2 = __importDefault(constants_2);
+    util_3 = __importDefault(util_3);
+    requestData_1 = __importDefault(requestData_1);
+    const Util = new util_3.default(null);
+    var TXREQUEST_ERROR;
+    (function (TXREQUEST_ERROR) {
+        TXREQUEST_ERROR["NULL_ADDRESS"] = "Attempted to instantiate a TxRequest class from a null address.";
+    })(TXREQUEST_ERROR || (TXREQUEST_ERROR = {}));
+    class TxRequest {
+        constructor(address, web3) {
+            this.data = {};
+            if (!Util.checkNotNullAddress(address)) {
+                throw new Error(TXREQUEST_ERROR.NULL_ADDRESS);
+            }
+            this.web3 = web3;
+            this.instance = this.web3.eth
+                .contract(Util.getABI("TransactionRequestCore"))
+                .at(address);
+        }
+        get address() {
+            return this.instance.address;
+        }
+        /**
+         * Window centric getters
+         */
+        get claimWindowSize() {
+            this.checkData();
+            return this.data.schedule.claimWindowSize;
+        }
+        get claimWindowStart() {
+            this.checkData();
+            return this.windowStart.minus(this.freezePeriod).minus(this.claimWindowSize);
+        }
+        get claimWindowEnd() {
+            this.checkData();
+            return this.claimWindowStart.plus(this.claimWindowSize);
+        }
+        get freezePeriod() {
+            this.checkData();
+            return this.data.schedule.freezePeriod;
+        }
+        get freezePeriodStart() {
+            this.checkData();
+            return this.windowStart.plus(this.claimWindowSize);
+        }
+        get freezePeriodEnd() {
+            this.checkData();
+            return this.claimWindowEnd.plus(this.freezePeriod);
+        }
+        get temporalUnit() {
+            this.checkData();
+            return this.data.schedule.temporalUnit;
+        }
+        get windowSize() {
+            this.checkData();
+            return this.data.schedule.windowSize;
+        }
+        get windowStart() {
+            this.checkData();
+            return this.data.schedule.windowStart;
+        }
+        get reservedWindowSize() {
+            this.checkData();
+            return this.data.schedule.reservedWindowSize;
+        }
+        get reservedWindowEnd() {
+            this.checkData();
+            return this.windowStart.plus(this.reservedWindowSize);
+        }
+        get executionWindowEnd() {
+            this.checkData();
+            return this.windowStart.plus(this.windowSize);
+        }
+        /**
+         * Dynamic getters
+         */
+        now() {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (this.temporalUnit === 1) {
+                    return new bignumber_js_3.default(yield Util.getBlockNumber(this.web3));
+                }
+                else if (this.temporalUnit === 2) {
+                    const timestamp = yield Util.getTimestamp(this.web3);
+                    return new bignumber_js_3.default(timestamp);
+                }
+                throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`);
+            });
+        }
+        beforeClaimWindow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return this.claimWindowStart.greaterThan(now);
+            });
+        }
+        inClaimWindow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return (this.claimWindowStart.lessThanOrEqualTo(now) &&
+                    this.claimWindowEnd.greaterThan(now));
+            });
+        }
+        inFreezePeriod() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return (this.claimWindowEnd.lessThanOrEqualTo(now) &&
+                    this.freezePeriodEnd.greaterThan(now));
+            });
+        }
+        inExecutionWindow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return (this.windowStart.lessThanOrEqualTo(now) &&
+                    this.executionWindowEnd.greaterThanOrEqualTo(now));
+            });
+        }
+        inReservedWindow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return (this.windowStart.lessThanOrEqualTo(now) &&
+                    this.reservedWindowEnd.greaterThan(now));
+            });
+        }
+        afterExecutionWindow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                return this.executionWindowEnd.lessThan(now);
+            });
+        }
+        executedAt() {
+            return __awaiter(this, void 0, void 0, function* () {
+                return (yield this.getExecutedEvent()).blockNumber;
+            });
+        }
+        getExecutedEvent() {
+            if (!this.wasCalled) {
+                return { blockNumber: 0 };
+            }
+            const events = this.instance.allEvents({ fromBlock: 0, toBlock: "latest" });
+            return new Promise((resolve, reject) => {
+                events.get((err, logs) => {
+                    if (!err) {
+                        const Executed = logs.filter((log) => {
+                            return log.topics[0] === "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9";
+                        });
+                        resolve({
+                            blockNumber: Executed[0].blockNumber,
+                            bounty: this.web3.toDecimal("0x" + Executed[0].data.slice(2, 66)),
+                            estimatedGas: this.web3.toDecimal("0x" + Executed[0].data.slice(131, 194)),
+                            fee: this.web3.toDecimal("0x" + Executed[0].data.slice(67, 130)),
+                        });
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        getBucket() {
+            let sign = -1;
+            let bucketSize = 0;
+            if (this.temporalUnit === 1) {
+                bucketSize = 240;
+            }
+            else if (this.temporalUnit === 2) {
+                bucketSize = 3600;
+                sign = 1;
+            }
+            return sign * this.windowStart.toNumber() - (this.windowStart.toNumber() % bucketSize);
+        }
+        /**
+         * Claim props/methods
+         */
+        get claimedBy() {
+            this.checkData();
+            return this.data.claimData.claimedBy;
+        }
+        get isClaimed() {
+            this.checkData();
+            return this.data.claimData.claimedBy !== constants_2.default.NULL_ADDRESS;
+        }
+        isClaimedBy(address) {
+            this.checkData();
+            return this.claimedBy === address;
+        }
+        get requiredDeposit() {
+            this.checkData();
+            return this.data.claimData.requiredDeposit;
+        }
+        claimPaymentModifier() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const now = yield this.now();
+                const elapsed = now.minus(this.claimWindowStart);
+                return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize);
+            });
+        }
+        /**
+         * Meta
+         */
+        get isCancelled() {
+            this.checkData();
+            return this.data.meta.isCancelled;
+        }
+        get wasCalled() {
+            this.checkData();
+            return this.data.meta.wasCalled;
+        }
+        get wasSuccessful() {
+            this.checkData();
+            return this.data.meta.wasSuccessful;
+        }
+        get owner() {
+            this.checkData();
+            return this.data.meta.owner;
+        }
+        /**
+         * TxData
+         */
+        get toAddress() {
+            this.checkData();
+            return this.data.txData.toAddress;
+        }
+        get callGas() {
+            this.checkData();
+            return this.data.txData.callGas;
+        }
+        get callValue() {
+            this.checkData();
+            return this.data.txData.callValue;
+        }
+        get gasPrice() {
+            this.checkData();
+            return this.data.txData.gasPrice;
+        }
+        get fee() {
+            this.checkData();
+            return this.data.paymentData.fee;
+        }
+        get bounty() {
+            this.checkData();
+            return this.data.paymentData.bounty;
+        }
+        /**
+         * Call Data
+         */
+        callData() {
+            return new Promise((resolve, reject) => {
+                this.instance.callData.call((err, callData) => {
+                    if (!err) {
+                        resolve(callData);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        /**
+         * Data management
+         */
+        fillData() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const requestData = yield requestData_1.default.from(this.instance);
+                this.data = requestData;
+                return true;
+            });
+        }
+        refreshData() {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (!this.data) {
+                    return this.fillData();
+                }
+                return this.data.refresh();
+            });
+        }
+        /**
+         * ABI convenience functions
+         */
+        get claimData() {
+            return this.instance.claim.getData();
+        }
+        get executeData() {
+            return this.instance.execute.getData();
+        }
+        get cancelData() {
+            return this.instance.cancel.getData();
+        }
+        /**
+         * Action Wrappers
+         */
+        /**
+         * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+         */
+        claim(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.claim(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then((receipt) => resolve(receipt))
+                            .catch((e) => reject(e));
+                    }
+                });
+            });
+        }
+        /**
+         * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+         */
+        execute(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.execute(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then((receipt) => resolve(receipt))
+                            .catch((e) => reject(e));
+                    }
+                });
+            });
+        }
+        /**
+         * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+         */
+        cancel(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.cancel(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then((receipt) => resolve(receipt))
+                            .catch((e) => reject(e));
+                    }
+                });
+            });
+        }
+        /**
+         * Proxy
+         * @param {string} toAddress Ethereum address
+         * @param {string} data Hex encoded data for the transaction to proxy
+         * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
+         */
+        proxy(toAddress, data, params) {
+            return new Promise((resolve, reject) => {
+                this.instance.proxy(toAddress, data, params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then(resolve) // resolves the receipt
+                            .catch(reject); // rejects the error
+                    }
+                });
+            });
+        }
+        /**
+         * Pull Payments
+         */
+        refundClaimDeposit(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.refundClaimDeposit(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then(resolve)
+                            .catch(reject);
+                    }
+                });
+            });
+        }
+        sendFee(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.sendFee(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then(resolve)
+                            .catch(reject);
+                    }
+                });
+            });
+        }
+        sendBounty(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.sendBounty(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then(resolve)
+                            .catch(reject);
+                    }
+                });
+            });
+        }
+        sendOwnerEther(params) {
+            return new Promise((resolve, reject) => {
+                this.instance.sendOwnerEther(params, (err, txHash) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        Util.waitForTransactionToBeMined(this.web3, txHash, null)
+                            .then(resolve)
+                            .catch(reject);
+                    }
+                });
+            });
+        }
+        /**
+         * Misc.
+         */
+        getBalance() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const bal = yield Util.getBalance(this.web3, this.address);
+                return new bignumber_js_3.default(bal);
+            });
+        }
+        /**
+         * Error handling
+         */
+        checkData() {
+            if (!this.data) {
+                throw new Error("Data has not been filled! Please call `txRequest.fillData()` before using this method.");
+            }
+        }
+    }
+    exports.default = TxRequest;
+});
+define("txRequest/index", ["require", "exports", "txRequest/txRequest"], function (require, exports, txRequest_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = txRequest_1.default;
+});
