@@ -6,8 +6,8 @@ import Constants from "./constants";
 type Address = string;
 
 enum UTIL_ERROR {
-  WEB3_ERROR = "[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.";
-  DEPRECATED = "[eac.js-lib] Deprecated.";
+  WEB3_ERROR = "[eac.js-lib] You must either pass a Web3 object to Util class or instatiate it with Web3 object.",
+  DEPRECATED = "[eac.js-lib] Deprecated.",
 }
 
 export default class Util {
@@ -211,13 +211,13 @@ export default class Util {
     interval = interval || 500;
     web3 = this.checkWeb3(web3);
 
-    const txReceiptAsync = (_txHash: any, resolve: any, reject: any) => {
-      web3.eth.getTransactionReceipt(_txHash, (err: any, receipt: any) => {
+    const txReceiptAsync = (txHash2: any, resolve: any, reject: any) => {
+      web3.eth.getTransactionReceipt(txHash2, (err: any, receipt: any) => {
         if (err) {
           reject(err);
         } else if (receipt === null) {
           setTimeout(() => {
-            txReceiptAsync(_txHash, resolve, reject);
+            txReceiptAsync(txHash2, resolve, reject);
           }, interval);
         } else {
           resolve(receipt);

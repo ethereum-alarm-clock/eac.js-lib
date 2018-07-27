@@ -50,6 +50,18 @@ interface IRequestData {
 
 export default class RequestData implements IRequestData {
 
+  public static from(txRequest: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      txRequest.requestData.call({ gas: 3000000 }, (err: any, data: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(new RequestData(data, txRequest));
+        }
+      });
+    });
+  }
+
   public claimData: IClaimData = {} as IClaimData;
   public meta: IMeta = {} as IMeta;
   public paymentData: IPaymentData = {} as IPaymentData;
@@ -66,29 +78,29 @@ export default class RequestData implements IRequestData {
     this.fill(data);
   }
 
-  fill(data: any) {
+  public fill(data: any) {
     this.claimData = {
-      claimedBy: data[0][0],
       claimDeposit: new BigNumber(data[2][0]),
+      claimedBy: data[0][0],
       paymentModifier: parseInt(data[3][0], 10),
       requiredDeposit: new BigNumber(data[2][14]),
     };
 
     this.meta = {
       createdBy: data[0][1],
-      owner: data[0][2],
       isCancelled: data[1][0],
+      owner: data[0][2],
       wasCalled: data[1][1],
       wasSuccessful: data[1][2],
     };
 
     this.paymentData = {
-      feeRecipient: data[0][3],
+      bounty: new BigNumber(data[2][3]),
       bountyBenefactor: data[0][4],
+      bountyOwed: new BigNumber(data[2][4]),
       fee: new BigNumber(data[2][1]),
       feeOwed: new BigNumber(data[2][2]),
-      bounty: new BigNumber(data[2][3]),
-      bountyOwed: new BigNumber(data[2][4]),
+      feeRecipient: data[0][3],
     };
 
     this.schedule = {
@@ -108,22 +120,12 @@ export default class RequestData implements IRequestData {
     };
   }
 
-  static from(txRequest: any): Promise<any> {
+  public refresh() {
     return new Promise((resolve, reject) => {
-      txRequest.requestData.call({ gas: 3000000 }, (err: any, data: any) => {
-        if (err) reject(err);
-        else {
-          resolve(new RequestData(data, txRequest));
-        }
-      });
-    });
-  }
-
-  refresh() {
-    return new Promise((resolve, reject) => {
-      this.txRequest.requestData.call((err, data) => {
-        if (err) reject(err);
-        else {
+      this.txRequest.requestData.call((err: any, data: any) => {
+        if (err) {
+          reject(err);
+        } else {
           this.fill(data);
           resolve(true);
         }

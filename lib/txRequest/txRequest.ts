@@ -7,7 +7,7 @@ import RequestData from "./requestData";
 const Util = new initUtil(null);
 
 enum TXREQUEST_ERROR {
-  NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address."; ,
+  NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address.",
 }
 
 export default class TxRequest {
@@ -15,7 +15,7 @@ export default class TxRequest {
   public instance: any;
   public web3: any;
 
-  constructor(address, web3) {
+  constructor(address: any, web3: any) {
     if (!Util.checkNotNullAddress(address)) {
       throw new Error(TXREQUEST_ERROR.NULL_ADDRESS);
     }
@@ -98,22 +98,22 @@ export default class TxRequest {
    * Dynamic getters
    */
 
-  async now() {
-    if (this.temporalUnit == 1) {
+  public async now() {
+    if (this.temporalUnit === 1) {
       return new BigNumber(await Util.getBlockNumber(this.web3));
-    } else if (this.temporalUnit == 2) {
+    } else if (this.temporalUnit === 2) {
       const timestamp = await Util.getTimestamp(this.web3);
       return new BigNumber(timestamp);
     }
     throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`);
   }
 
-  async beforeClaimWindow() {
+  public async beforeClaimWindow() {
     const now = await this.now();
     return this.claimWindowStart.greaterThan(now);
   }
 
-  async inClaimWindow() {
+  public async inClaimWindow() {
     const now = await this.now();
     return (
       this.claimWindowStart.lessThanOrEqualTo(now) &&
@@ -121,7 +121,7 @@ export default class TxRequest {
     );
   }
 
-  async inFreezePeriod() {
+  public async inFreezePeriod() {
     const now = await this.now();
     return (
       this.claimWindowEnd.lessThanOrEqualTo(now) &&
@@ -129,7 +129,7 @@ export default class TxRequest {
     );
   }
 
-  async inExecutionWindow() {
+  public async inExecutionWindow() {
     const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
@@ -137,7 +137,7 @@ export default class TxRequest {
     );
   }
 
-  async inReservedWindow() {
+  public async inReservedWindow() {
     const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
@@ -145,54 +145,50 @@ export default class TxRequest {
     );
   }
 
-  async afterExecutionWindow() {
+  public async afterExecutionWindow() {
     const now = await this.now();
     return this.executionWindowEnd.lessThan(now);
   }
 
-  /**
-   *
-   */
-  createdAt() {
-
+  public async executedAt() {
+    return ((await this.getExecutedEvent()) as any).blockNumber;
   }
 
-  async executedAt() {
-    return (await this.getExecutedEvent()).blockNumber;
-  }
-
-  getExecutedEvent() {
+  public getExecutedEvent() {
     if (!this.wasCalled) {
       return {blockNumber: 0};
     }
     const events = this.instance.allEvents({fromBlock: 0, toBlock: "latest"});
     return new Promise((resolve, reject) => {
-      events.get((err, logs) => {
+      events.get((err: any, logs: any) => {
         if (!err) {
-          const Executed = logs.filter((log) => log.topics[0] === "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9");
+          const Executed = logs.filter((log: any) => {
+            return log.topics[0] === "0x3e504bb8b225ad41f613b0c3c4205cdd752d1615b4d77cd1773417282fcfb5d9";
+          });
           resolve({
             blockNumber: Executed[0].blockNumber,
             bounty: this.web3.toDecimal("0x" + Executed[0].data.slice(2, 66)),
-            fee: this.web3.toDecimal("0x" + Executed[0].data.slice(67, 130)),
             estimatedGas: this.web3.toDecimal("0x" + Executed[0].data.slice(131, 194)),
+            fee: this.web3.toDecimal("0x" + Executed[0].data.slice(67, 130)),
           });
+        } else {
+          reject(err);
         }
-        else reject(err);
       });
     });
   }
 
-  getBucket() {
+  public getBucket() {
     let sign = -1;
-    let bucketSize;
+    let bucketSize = 0;
 
-    if (this.temporalUnit == 1) {
+    if (this.temporalUnit === 1) {
       bucketSize = 240;
-    } else if (this.temporalUnit == 2) {
+    } else if (this.temporalUnit === 2) {
       bucketSize = 3600;
       sign = 1;
     }
-    return sign * this.windowStart - (this.windowStart % bucketSize);
+    return sign * this.windowStart.toNumber() - (this.windowStart.toNumber() % bucketSize);
   }
 
   /**
@@ -209,7 +205,7 @@ export default class TxRequest {
     return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS;
   }
 
-  isClaimedBy(address) {
+  public isClaimedBy(address: any) {
     this.checkData();
     return this.claimedBy === address;
   }
@@ -219,7 +215,7 @@ export default class TxRequest {
     return this.data.claimData.requiredDeposit;
   }
 
-  async claimPaymentModifier() {
+  public async claimPaymentModifier() {
     const now = await this.now();
     const elapsed = now.minus(this.claimWindowStart);
     return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize);
@@ -287,11 +283,14 @@ export default class TxRequest {
    * Call Data
    */
 
-  callData() {
+  public callData() {
     return new Promise((resolve, reject) => {
-      this.instance.callData.call((err, callData) => {
-        if (!err) resolve(callData);
-        else reject(err);
+      this.instance.callData.call((err: any, callData: any) => {
+        if (!err) {
+          resolve(callData);
+        } else {
+          reject(err);
+        }
       });
     });
   }
@@ -300,13 +299,13 @@ export default class TxRequest {
    * Data management
    */
 
-  async fillData() {
+  public async fillData() {
     const requestData = await RequestData.from(this.instance);
     this.data = requestData;
     return true;
   }
 
-  async refreshData() {
+  public async refreshData() {
     if (!this.data) {
       return this.fillData();
     }
@@ -336,12 +335,13 @@ export default class TxRequest {
   /**
    * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
    */
-  claim(params) {
+  public claim(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.claim(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.claim(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then((receipt) => resolve(receipt))
             .catch((e) => reject(e));
         }
@@ -352,12 +352,13 @@ export default class TxRequest {
   /**
    * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
    */
-  execute(params) {
+  public execute(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.execute(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.execute(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then((receipt) => resolve(receipt))
             .catch((e) => reject(e));
         }
@@ -368,12 +369,13 @@ export default class TxRequest {
   /**
    * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
    */
-  cancel(params) {
+  public cancel(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.cancel(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.cancel(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then((receipt) => resolve(receipt))
             .catch((e) => reject(e));
         }
@@ -387,12 +389,13 @@ export default class TxRequest {
    * @param {string} data Hex encoded data for the transaction to proxy
    * @param {Object} params Transaction object including `from`, `gas`, `gasPrice` and `value`.
    */
-  proxy(toAddress, data, params) {
+  public proxy(toAddress: any, data: any, params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.proxy(toAddress, data, params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.proxy(toAddress, data, params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then(resolve) // resolves the receipt
             .catch(reject); // rejects the error
         }
@@ -403,13 +406,13 @@ export default class TxRequest {
   /**
    * Pull Payments
    */
-
-  refundClaimDeposit(params) {
+  public refundClaimDeposit(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.refundClaimDeposit(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.refundClaimDeposit(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -417,12 +420,13 @@ export default class TxRequest {
     });
   }
 
-  sendFee(params) {
+  public sendFee(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.sendFee(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.sendFee(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -430,12 +434,13 @@ export default class TxRequest {
     });
   }
 
-  sendBounty(params) {
+  public sendBounty(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.sendBounty(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.sendBounty(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -443,12 +448,13 @@ export default class TxRequest {
     });
   }
 
-  sendOwnerEther(params) {
+  public sendOwnerEther(params: any) {
     return new Promise((resolve, reject) => {
-      this.instance.sendOwnerEther(params, (err, txHash) => {
-        if (err) reject(err);
-        else {
-          Util.waitForTransactionToBeMined(this.web3, txHash)
+      this.instance.sendOwnerEther(params, (err: any, txHash: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          Util.waitForTransactionToBeMined(this.web3, txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -460,7 +466,7 @@ export default class TxRequest {
    * Misc.
    */
 
-  async getBalance() {
+  public async getBalance() {
     const bal = await Util.getBalance(this.web3, this.address);
     return new BigNumber(bal);
   }
@@ -468,11 +474,9 @@ export default class TxRequest {
   /**
    * Error handling
    */
-  checkData() {
+  public checkData() {
     if (!this.data) {
       throw new Error("Data has not been filled! Please call `txRequest.fillData()` before using this method.");
     }
   }
 }
-
-module.exports = TxRequest;
