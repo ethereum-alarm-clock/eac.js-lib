@@ -85,7 +85,7 @@ export default class Util {
   }
 
   public getABI(name: string): {} {
-    return require(`${__dirname}/build/abi/${name}.json`);
+    return require(`../static/build/abi/${name}.json`);
   }
 
   public getBalance(address: Address): Promise<number> {
