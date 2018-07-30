@@ -27,12 +27,12 @@ const initPackage = (web3: any) => {
     Version,
     requestFactory: async () => {
       const chainName = await util.getChainName();
-      const contracts = require(`./lib/assets/${chainName}.json`);
+      const contracts = require(`../static/assets/${chainName}.json`);
       return new RequestFactory(contracts.requestFactory, web3);
     },
     scheduler: async () => {
       const chainName = await util.getChainName()
-      const contracts = require(`./lib/assets/${chainName}.json`)
+      const contracts = require(`../static/assets/${chainName}.json`);
       return new Scheduler(
         contracts.blockScheduler,
         contracts.timestampScheduler,
