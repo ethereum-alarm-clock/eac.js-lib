@@ -6,11 +6,11 @@ truffle migrate --reset
 cd ..
 
 echo "Moving the generated contract files..."
-rm -Rfv lib/build/*
-cp -Rfv ethereum-alarm-clock/build/* lib/build/
-cp -fv ethereum-alarm-clock/package.json lib/build/ethereum-alarm-clock.json
+rm -Rfv static/build/*
+cp -Rfv ethereum-alarm-clock/build/* static/build/
+cp -fv ethereum-alarm-clock/package.json static/build/ethereum-alarm-clock.json
 
 node ./extractContractsInfo.js development
-mv -fv contracts.json lib/assets/development.json || true
+mv -fv contracts.json static/assets/development.json || true
 
 echo "Done."
