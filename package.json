@@ -4,6 +4,9 @@
   "description": "Javascript library for interacting with the Ethereum Alarm Clock contracts",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "lint": "tslint lib/**/*.ts",
+    "lint-fix": "tslint lib/**/*.ts --fix",
     "test": "mocha",
     "citest": "./scripts/citest.sh"
   },

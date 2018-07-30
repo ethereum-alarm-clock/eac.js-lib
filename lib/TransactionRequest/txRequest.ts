@@ -4,8 +4,6 @@ import Constants from "../constants";
 import initUtil from "../util";
 import RequestData from "./requestData";
 
-const Util = new initUtil(null);
-
 enum TXREQUEST_ERROR {
   NULL_ADDRESS = "Attempted to instantiate a TxRequest class from a null address.",
 }
@@ -13,16 +11,18 @@ enum TXREQUEST_ERROR {
 export default class TxRequest {
   public data: RequestData = {} as RequestData;
   public instance: any;
+  public util: any;
   public web3: any;
 
   constructor(address: any, web3: any) {
-    if (!Util.checkNotNullAddress(address)) {
+    if (!this.util.checkNotNullAddress(address)) {
       throw new Error(TXREQUEST_ERROR.NULL_ADDRESS);
     }
 
     this.web3 = web3;
+    this.util = new initUtil(web3);
     this.instance = this.web3.eth
-      .contract(Util.getABI("TransactionRequestCore"))
+      .contract(this.util.getABI("TransactionRequestCore"))
       .at(address);
   }
 
@@ -100,9 +100,9 @@ export default class TxRequest {
 
   public async now() {
     if (this.temporalUnit === 1) {
-      return new BigNumber(await Util.getBlockNumber(this.web3));
+      return new BigNumber(await this.util.getBlockNumber(this.web3));
     } else if (this.temporalUnit === 2) {
-      const timestamp = await Util.getTimestamp(this.web3);
+      const timestamp = await this.util.getTimestamp(this.web3);
       return new BigNumber(timestamp);
     }
     throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`);
@@ -341,9 +341,9 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
-            .then((receipt) => resolve(receipt))
-            .catch((e) => reject(e));
+          this.util.waitForTransactionToBeMined(txHash, null)
+            .then((receipt: any) => resolve(receipt))
+            .catch((e: any) => reject(e));
         }
       });
     });
@@ -358,9 +358,9 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
-            .then((receipt) => resolve(receipt))
-            .catch((e) => reject(e));
+          this.util.waitForTransactionToBeMined(txHash, null)
+            .then((receipt: any) => resolve(receipt))
+            .catch((e: any) => reject(e));
         }
       });
     });
@@ -375,9 +375,9 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
-            .then((receipt) => resolve(receipt))
-            .catch((e) => reject(e));
+          this.util.waitForTransactionToBeMined(txHash, null)
+            .then((receipt: any) => resolve(receipt))
+            .catch((e: any) => reject(e));
         }
       });
     });
@@ -395,7 +395,7 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
+          this.util.waitForTransactionToBeMined(txHash, null)
             .then(resolve) // resolves the receipt
             .catch(reject); // rejects the error
         }
@@ -412,7 +412,7 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
+          this.util.waitForTransactionToBeMined(txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -426,7 +426,7 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
+          this.util.waitForTransactionToBeMined(txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -440,7 +440,7 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
+          this.util.waitForTransactionToBeMined(txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -454,7 +454,7 @@ export default class TxRequest {
         if (err) {
           reject(err);
         } else {
-          Util.waitForTransactionToBeMined(this.web3, txHash, null)
+          this.util.waitForTransactionToBeMined(txHash, null)
             .then(resolve)
             .catch(reject);
         }
@@ -467,7 +467,7 @@ export default class TxRequest {
    */
 
   public async getBalance() {
-    const bal = await Util.getBalance(this.web3, this.address);
+    const bal = await this.util.getBalance(this.address);
     return new BigNumber(bal);
   }
 
@@ -480,3 +480,7 @@ export default class TxRequest {
     }
   }
 }
+
+export {
+  RequestData,
+};

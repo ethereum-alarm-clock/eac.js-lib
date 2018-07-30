@@ -1,23 +1,21 @@
-/* eslint class-methods-use-this: "off" */
-
 import initUtil from "../util";
 
 type Address = string;
 
-const Util = new initUtil(null);
-
 export default class RequestFactory {
   public instance: any;
+  public util: any;
   public web3: any;
 
   constructor(address: Address, web3: any) {
-    if (!Util.checkNotNullAddress(address)) {
+    if (!this.util.checkNotNullAddress(address)) {
       throw new Error(`Cannot initialize a RequestFactory from address ${address}`);
     }
 
     this.web3 = web3;
+    this.util = new initUtil(web3);
     this.instance = this.web3.eth
-      .contract(Util.getABI("RequestFactory"))
+      .contract(this.util.getABI("RequestFactory"))
       .at(address);
   }
 
@@ -88,7 +86,7 @@ export default class RequestFactory {
 
   public async getRequestCreatedLogs(filter: any, startBlockNum: number, endBlockNum: number): Promise<any> {
     const f = filter || {};
-    const curBlock = await Util.getBlockNumber(this.web3);
+    const curBlock = await this.util.getBlockNumber(this.web3);
     const start = startBlockNum || 1;
     const end = endBlockNum || "latest";
     const event = this.instance.RequestCreated(
@@ -108,7 +106,7 @@ export default class RequestFactory {
 
   public async watchRequestCreatedLogs(filter: any, startBlockNum: any, callback: any): Promise<any> {
     const f = filter || {};
-    const curBlock = await Util.getBlockNumber(this.web3);
+    const curBlock = await this.util.getBlockNumber(this.web3);
     const start = startBlockNum || 1;
     const event = this.instance.RequestCreated(
       f,

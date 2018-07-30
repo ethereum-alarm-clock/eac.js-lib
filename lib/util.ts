@@ -31,8 +31,8 @@ export default class Util {
     throw new Error(UTIL_ERROR.DEPRECATED);
   }
 
-  public checkNetworkID(web3: any): Promise<boolean> {
-    web3 = this.checkWeb3(web3);
+  public checkNetworkID(): Promise<boolean> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.version.getNetwork((err: any, netId: any) => {
@@ -70,8 +70,8 @@ export default class Util {
     return ethUtil.isValidAddress(address);
   }
 
-  public estimateGas(web3: any, opts: {}): Promise<number> {
-    web3 = this.checkWeb3(web3);
+  public estimateGas(opts: {}): Promise<number> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.eth.estimateGas(opts, (err: any, gas: any) => {
@@ -88,8 +88,8 @@ export default class Util {
     return require(`${__dirname}/build/abi/${name}.json`);
   }
 
-  public getBalance(web3: any, address: Address): Promise<number> {
-    web3 = this.checkWeb3(web3);
+  public getBalance(address: Address): Promise<number> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.eth.getBalance(address, (err: any, bal: any) => {
@@ -102,8 +102,8 @@ export default class Util {
     });
   }
 
-  public getBlockNumber(web3: any): Promise<number> {
-    web3 = this.checkWeb3(web3);
+  public getBlockNumber(): Promise<number> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.eth.getBlockNumber((err: any, blockNum: any) => {
@@ -116,8 +116,8 @@ export default class Util {
     });
   }
 
-  public getGasPrice(web3: any): Promise<number> {
-    web3 = this.checkWeb3(web3);
+  public getGasPrice(): Promise<number> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.eth.getGasPrice((err: any, gasPrice: any) => {
@@ -130,8 +130,8 @@ export default class Util {
     });
   }
 
-  public getTimestamp(web3: any): Promise<number> {
-    web3 = this.checkWeb3(web3);
+  public getTimestamp(): Promise<number> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.eth.getBlock("latest", (err: any, block: any) => {
@@ -144,10 +144,10 @@ export default class Util {
     });
   }
 
-  public getTimestampForBlock(web3: any, blockNum: any): any {
-    web3 = this.checkWeb3(web3);
+  public getTimestampForBlock(blockNum: any): any {
+    const web3 = this.checkWeb3();
 
-    this.getBlockNumber(web3).then((curBlockNum) => {
+    this.getBlockNumber().then((curBlockNum) => {
       if (blockNum > curBlockNum) {
         throw new Error(`[eac.js-lib] Passed blockNum ${blockNum} is greater than current blockNum ${curBlockNum}`);
       }
@@ -176,8 +176,8 @@ export default class Util {
     return "0x" + newRequestLog.data.slice(-40);
   }
 
-  public getChainName(web3: any): Promise<string> {
-    web3 = this.checkWeb3(web3);
+  public getChainName(): Promise<string> {
+    const web3 = this.checkWeb3();
 
     return new Promise((resolve: any, reject: any) => {
       web3.version.getNetwork((err: any, netId: any) => {
@@ -207,9 +207,9 @@ export default class Util {
     });
   }
 
-  public waitForTransactionToBeMined(web3: any, txHash: any, interval: any): Promise<any> {
+  public waitForTransactionToBeMined(txHash: any, interval: any): Promise<any> {
     interval = interval || 500;
-    web3 = this.checkWeb3(web3);
+    const web3 = this.checkWeb3();
 
     const txReceiptAsync = (txHash2: any, resolve: any, reject: any) => {
       web3.eth.getTransactionReceipt(txHash2, (err: any, receipt: any) => {
@@ -230,11 +230,11 @@ export default class Util {
     });
   }
 
-  private checkWeb3(web3: any): any {
-    if (!web3 && !this.web3) {
+  private checkWeb3(): any {
+    if (!this.web3) {
       throw new Error(UTIL_ERROR.WEB3_ERROR);
     }
-    return web3 || this.web3;
+    return this.web3;
   }
 }
 

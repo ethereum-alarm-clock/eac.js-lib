@@ -101,7 +101,7 @@ export default class Scheduler {
           if (err) {
             reject(err);
           } else {
-            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
+            const miningPromise = Util.waitForTransactionToBeMined(txHash, null);
 
             if (waitForMined) {
               miningPromise
@@ -155,7 +155,7 @@ export default class Scheduler {
           if (err) {
             reject(err);
           } else {
-            const miningPromise = Util.waitForTransactionToBeMined(this.web3, txHash, null);
+            const miningPromise = Util.waitForTransactionToBeMined(txHash, null);
 
             if (waitForMined) {
               miningPromise
