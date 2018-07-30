@@ -10,7 +10,7 @@ const web3 = new Web3(provider)
 const TruffleContract = require('truffle-contract')
 
 const getArtifact = name => {
-    const contract = TruffleContract(require(`./lib/build/contracts/${name}.json`))
+    const contract = TruffleContract(require(`./static/build/contracts/${name}.json`))
     contract.setProvider(provider)
     contract.detectNetwork()
     return contract
@@ -150,7 +150,7 @@ async function main() {
                 timestampScheduler: timestampScheduler.address
             }
             const fs = require('fs')
-            fs.writeFileSync('./lib/assets/tester.json', JSON.stringify(contracts))
+            fs.writeFileSync('./static/assets/tester.json', JSON.stringify(contracts))
             resolve({
                 // Ganache attached web3
                 web3: web3,
