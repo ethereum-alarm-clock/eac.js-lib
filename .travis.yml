@@ -12,6 +12,7 @@ install: npm install
 script:
   - npm i -g truffle
   - sh deploy.sh
+  - npm run build
   - npm test
 git:
   submodules: true
