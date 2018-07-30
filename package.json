@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "bignumber.js": "5.0.0",
-    "ethereumjs-util": "5.2.0"
+    "ethereumjs-util": "5.2.0",
+    "ethereumjs-wallet": "^0.6.1"
   }
 }
