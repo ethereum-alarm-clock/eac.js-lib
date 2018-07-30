@@ -8,7 +8,8 @@
     "lint": "tslint lib/**/*.ts",
     "lint-fix": "tslint lib/**/*.ts --fix",
     "test": "mocha",
-    "citest": "./scripts/citest.sh"
+    "deploy-eac": "sh scripts/deploy_eac.sh",
+    "ganache": "ganache-cli -m \"shove afford modify census bridge good random error fault floor fringe oblige\" -i 1002"
   },
   "repository": {
     "type": "git",
