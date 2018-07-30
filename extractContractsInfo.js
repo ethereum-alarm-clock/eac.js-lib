@@ -8,7 +8,7 @@
  *  Available networks:
  *  mainnet, ropsten, rinkeby, kovan, development
  */
-const artifactsDir = './static/build/contracts';
+const artifactsDir = './static/build';
 const dest = './static/build/abi'
 const fs = require('fs');
 const path = require('path');
