@@ -5,7 +5,7 @@ const { timetravel } = require('./helper/mine2')
 
 describe("TxRequest", () => {
 	let eac
-	let delpoyed
+	let deployed
 	let web3
 
 	before(async () => {
