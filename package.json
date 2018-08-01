@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "lint": "tslint lib/**/*.ts",
-    "lint-fix": "tslint lib/**/*.ts --fix",
+    "lint": "tslint src/**/*.ts",
+    "lint-fix": "tslint src/**/*.ts --fix",
     "test": "mocha",
     "deploy-eac": "sh scripts/deploy_eac.sh",
     "ganache": "ganache-cli -m \"shove afford modify census bridge good random error fault floor fringe oblige\" -i 1002"

@@ -1,3 +1,10 @@
+import {
+  Bucket,
+  BucketSize,
+  IBucketPair,
+  IBuckets,
+} from "./Buckets";
+
 import Constants from "./constants";
 import RequestFactory from "./RequestFactory";
 import Scheduler from "./Scheduler";
@@ -31,7 +38,7 @@ const initPackage = (web3: any) => {
       return new RequestFactory(contracts.requestFactory, web3);
     },
     scheduler: async () => {
-      const chainName = await util.getChainName()
+      const chainName = await util.getChainName();
       const contracts = require(`../static/assets/${chainName}.json`);
       return new Scheduler(
         contracts.blockScheduler,
@@ -46,3 +53,9 @@ const initPackage = (web3: any) => {
 };
 
 export default initPackage;
+export {
+  Bucket,
+  BucketSize,
+  IBucketPair,
+  IBuckets,
+};

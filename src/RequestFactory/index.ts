@@ -1,6 +1,16 @@
+import { Bucket, BucketSize } from "../Buckets";
 import initUtil from "../util";
 
 type Address = string;
+
+enum RequestFactoryError {
+  INIT_NULL_ADDR = "Cannot initialize a RequestFactory from null address.",
+}
+
+enum TemporalUnit {
+  Block = 1,
+  TimeStamp = 2,
+}
 
 export default class RequestFactory {
   public instance: any;
@@ -9,7 +19,7 @@ export default class RequestFactory {
 
   constructor(address: Address, web3: any) {
     if (!this.util.checkNotNullAddress(address)) {
-      throw new Error(`Cannot initialize a RequestFactory from address ${address}`);
+      throw new Error(RequestFactoryError.INIT_NULL_ADDR);
     }
 
     this.web3 = web3;
@@ -130,7 +140,7 @@ export default class RequestFactory {
     });
   }
 
-  public async getRequestsByBucket(bucket: any): Promise<any[]> {
+  public async getRequestsByBucket(bucket: Bucket): Promise<any[]> {
     const logs = await this.getRequestCreatedLogs({
       bucket,
     }, 0, 0);
@@ -144,7 +154,7 @@ export default class RequestFactory {
     return requests;
   }
 
-  public async watchRequestsByBucket(bucket: any, cb: any): Promise<any> {
+  public async watchRequestsByBucket(bucket: Bucket, cb: any): Promise<any> {
     return await this.watchRequestCreatedLogs({
       bucket,
     }, "",
@@ -159,12 +169,15 @@ export default class RequestFactory {
   }
 
   // Assume the temporalUnit is blocks if not timestamp.
-  public calcBucket(windowStart: number, temporalUnit: number) {
-    let bucketSize = 240;  // block bucketsize
+  public calcBucket(windowStart: number, temporalUnit: TemporalUnit) {
+    // Assume block as default unit.
+    let bucketSize = BucketSize.block;
+    // TODO make constant
     let sign = -1;  // block sign
 
     if (temporalUnit === 2) {
-      bucketSize = 3600; // timestamp bucketsize
+      bucketSize = BucketSize.timestamp;
+      // TODO make constant
       sign = 1; // timestamp sign
     }
 
@@ -189,7 +202,7 @@ export default class RequestFactory {
       });
   }
 
-  public async getRequestsByOwner(owner: string, startBlock: number, endBlock: number) {
+  public async getRequestsByOwner(owner: Address, startBlock: number, endBlock: number) {
     const logs = await this.getRequestCreatedLogs({
       owner,
     }, startBlock, endBlock);
@@ -200,7 +213,7 @@ export default class RequestFactory {
     return requests;
   }
 
-  public async watchRequestsByOwner(owner: string, startBlock: number, callback: any): Promise<any> {
+  public async watchRequestsByOwner(owner: Address, startBlock: number, callback: any): Promise<void> {
     return await this.watchRequestCreatedLogs({
       owner,
     }, startBlock, (error: any, log: any) => {
@@ -209,26 +222,4 @@ export default class RequestFactory {
       }
     });
   }
-
-  /**
-   * Chain inits
-   */
-
-  // static initMainnet() {
-  //   throw new Error("Not implemented.")
-  // }
-
-  // static initRopsten(web3) {
-  //   const address = require("../assets/ropsten.json").requestFactory
-  //   return new RequestFactory(address, web3)
-  // }
-
-  // static initRinkeby() {
-  //   throw new Error("Not implemented.")
-  // }
-
-  // static initKovan(web3) {
-  //   const address = require("../assets/kovan.json").requestFactory
-  //   return new RequestFactory(address, web3)
-  // }
 }

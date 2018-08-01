@@ -7,7 +7,7 @@ describe("Request Factory", () => {
 	let web3
 
 	before(async () => {
-		const deployed = await Deployer()
+		const deployed = await Deployer();
 		web3 = deployed.web3
 		eac = require('../index')(web3)
 	})

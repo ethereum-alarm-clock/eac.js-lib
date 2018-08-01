@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+import { TemporalUnit } from "../Types";
+
 interface IClaimData {
   claimedBy: string;
   claimDeposit: BigNumber;
@@ -28,7 +30,7 @@ interface ISchedule {
   claimWindowSize: BigNumber;
   freezePeriod: BigNumber;
   reservedWindowSize: BigNumber;
-  temporalUnit: number;
+  temporalUnit: TemporalUnit;
   windowSize: BigNumber;
   windowStart: BigNumber;
 }
@@ -120,7 +122,7 @@ export default class RequestData implements IRequestData {
     };
   }
 
-  public refresh() {
+  public refresh(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.txRequest.requestData.call((err: any, data: any) => {
         if (err) {

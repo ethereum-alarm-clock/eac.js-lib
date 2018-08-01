@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import Constants from "../constants";
+import { Address, TemporalUnit } from "../Types";
 import initUtil from "../util";
 import RequestData from "./requestData";
 
@@ -14,7 +15,7 @@ export default class TxRequest {
   public util: any;
   public web3: any;
 
-  constructor(address: any, web3: any) {
+  constructor(address: Address, web3: any) {
     if (!this.util.checkNotNullAddress(address)) {
       throw new Error(TXREQUEST_ERROR.NULL_ADDRESS);
     }
@@ -26,7 +27,7 @@ export default class TxRequest {
       .at(address);
   }
 
-  get address() {
+  get address(): Address {
     return this.instance.address;
   }
 
@@ -34,62 +35,62 @@ export default class TxRequest {
    * Window centric getters
    */
 
-  get claimWindowSize() {
+  get claimWindowSize(): BigNumber {
     this.checkData();
     return this.data.schedule.claimWindowSize;
   }
 
-  get claimWindowStart() {
+  get claimWindowStart(): BigNumber {
     this.checkData();
     return this.windowStart.minus(this.freezePeriod).minus(this.claimWindowSize);
   }
 
-  get claimWindowEnd() {
+  get claimWindowEnd(): BigNumber {
     this.checkData();
     return this.claimWindowStart.plus(this.claimWindowSize);
   }
 
-  get freezePeriod() {
+  get freezePeriod(): BigNumber {
     this.checkData();
     return this.data.schedule.freezePeriod;
   }
 
-  get freezePeriodStart() {
+  get freezePeriodStart(): BigNumber {
     this.checkData();
     return this.windowStart.plus(this.claimWindowSize);
   }
 
-  get freezePeriodEnd() {
+  get freezePeriodEnd(): BigNumber {
     this.checkData();
     return this.claimWindowEnd.plus(this.freezePeriod);
   }
 
-  get temporalUnit() {
+  get temporalUnit(): TemporalUnit {
     this.checkData();
     return this.data.schedule.temporalUnit;
   }
 
-  get windowSize() {
+  get windowSize(): BigNumber {
     this.checkData();
     return this.data.schedule.windowSize;
   }
 
-  get windowStart() {
+  get windowStart(): BigNumber {
     this.checkData();
     return this.data.schedule.windowStart;
   }
 
-  get reservedWindowSize() {
+  get reservedWindowSize(): BigNumber {
     this.checkData();
     return this.data.schedule.reservedWindowSize;
   }
 
-  get reservedWindowEnd() {
+  get reservedWindowEnd(): BigNumber {
     this.checkData();
     return this.windowStart.plus(this.reservedWindowSize);
   }
 
-  get executionWindowEnd() {
+  get executionWindowEnd(): BigNumber {
     this.checkData();
     return this.windowStart.plus(this.windowSize);
   }
@@ -98,7 +99,7 @@ export default class TxRequest {
    * Dynamic getters
    */
 
-  public async now() {
+  public async now(): Promise<BigNumber> {
     if (this.temporalUnit === 1) {
       return new BigNumber(await this.util.getBlockNumber(this.web3));
     } else if (this.temporalUnit === 2) {
@@ -108,12 +109,12 @@ export default class TxRequest {
     throw new Error(`Unrecognized temporal unit: ${this.temporalUnit}`);
   }
 
-  public async beforeClaimWindow() {
+  public async beforeClaimWindow(): Promise<boolean> {
     const now = await this.now();
     return this.claimWindowStart.greaterThan(now);
   }
 
-  public async inClaimWindow() {
+  public async inClaimWindow(): Promise<boolean> {
     const now = await this.now();
     return (
       this.claimWindowStart.lessThanOrEqualTo(now) &&
@@ -121,7 +122,7 @@ export default class TxRequest {
     );
   }
 
-  public async inFreezePeriod() {
+  public async inFreezePeriod(): Promise<boolean> {
     const now = await this.now();
     return (
       this.claimWindowEnd.lessThanOrEqualTo(now) &&
@@ -129,7 +130,7 @@ export default class TxRequest {
     );
   }
 
-  public async inExecutionWindow() {
+  public async inExecutionWindow(): Promise<boolean> {
     const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
@@ -137,7 +138,7 @@ export default class TxRequest {
     );
   }
 
-  public async inReservedWindow() {
+  public async inReservedWindow(): Promise<boolean> {
     const now = await this.now();
     return (
       this.windowStart.lessThanOrEqualTo(now) &&
@@ -145,16 +146,16 @@ export default class TxRequest {
     );
   }
 
-  public async afterExecutionWindow() {
+  public async afterExecutionWindow(): Promise<boolean> {
     const now = await this.now();
     return this.executionWindowEnd.lessThan(now);
   }
 
-  public async executedAt() {
+  public async executedAt(): Promise<any> {
     return ((await this.getExecutedEvent()) as any).blockNumber;
   }
 
-  public getExecutedEvent() {
+  public getExecutedEvent(): any|Promise<any> {
     if (!this.wasCalled) {
       return {blockNumber: 0};
     }
@@ -195,27 +196,27 @@ export default class TxRequest {
    * Claim props/methods
    */
 
-  get claimedBy() {
+  get claimedBy(): Address {
     this.checkData();
     return this.data.claimData.claimedBy;
   }
 
-  get isClaimed() {
+  get isClaimed(): boolean {
     this.checkData();
     return this.data.claimData.claimedBy !== Constants.NULL_ADDRESS;
   }
 
-  public isClaimedBy(address: any) {
+  public isClaimedBy(address: any): boolean {
     this.checkData();
     return this.claimedBy === address;
   }
 
-  get requiredDeposit() {
+  get requiredDeposit(): BigNumber {
     this.checkData();
     return this.data.claimData.requiredDeposit;
   }
 
-  public async claimPaymentModifier() {
+  public async claimPaymentModifier(): Promise<BigNumber> {
     const now = await this.now();
     const elapsed = now.minus(this.claimWindowStart);
     return elapsed.times(100).dividedToIntegerBy(this.claimWindowSize);
@@ -225,22 +226,22 @@ export default class TxRequest {
    * Meta
    */
 
-  get isCancelled() {
+  get isCancelled(): boolean {
     this.checkData();
     return this.data.meta.isCancelled;
   }
 
-  get wasCalled() {
+  get wasCalled(): boolean {
     this.checkData();
     return this.data.meta.wasCalled;
   }
 
-  get wasSuccessful() {
+  get wasSuccessful(): boolean {
     this.checkData();
     return this.data.meta.wasSuccessful;
   }
 
-  get owner() {
+  get owner(): Address {
     this.checkData();
     return this.data.meta.owner;
   }
@@ -249,32 +250,32 @@ export default class TxRequest {
    * TxData
    */
 
-  get toAddress() {
+  get toAddress(): Address {
     this.checkData();
     return this.data.txData.toAddress;
   }
 
-  get callGas() {
+  get callGas(): BigNumber {
     this.checkData();
     return this.data.txData.callGas;
   }
 
-  get callValue() {
+  get callValue(): BigNumber {
     this.checkData();
     return this.data.txData.callValue;
   }
 
-  get gasPrice() {
+  get gasPrice(): BigNumber {
     this.checkData();
     return this.data.txData.gasPrice;
   }
 
-  get fee() {
+  get fee(): BigNumber {
     this.checkData();
     return this.data.paymentData.fee;
   }
 
-  get bounty() {
+  get bounty(): BigNumber {
     this.checkData();
     return this.data.paymentData.bounty;
   }
@@ -283,7 +284,7 @@ export default class TxRequest {
    * Call Data
    */
 
-  public callData() {
+  public callData(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.instance.callData.call((err: any, callData: any) => {
         if (!err) {
@@ -299,13 +300,13 @@ export default class TxRequest {
    * Data management
    */
 
-  public async fillData() {
+  public async fillData(): Promise<boolean> {
     const requestData = await RequestData.from(this.instance);
     this.data = requestData;
     return true;
   }
 
-  public async refreshData() {
+  public async refreshData(): Promise<boolean> {
     if (!this.data) {
       return this.fillData();
     }
