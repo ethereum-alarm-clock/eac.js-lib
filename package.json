@@ -4,8 +4,12 @@
   "description": "Javascript library for interacting with the Ethereum Alarm Clock contracts",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "lint": "tslint src/**/*.ts",
+    "lint-fix": "tslint src/**/*.ts --fix",
     "test": "mocha",
-    "citest": "./scripts/citest.sh"
+    "deploy-eac": "sh scripts/deploy_eac.sh",
+    "ganache": "ganache-cli -m \"shove afford modify census bridge good random error fault floor fringe oblige\" -i 1002"
   },
   "repository": {
     "type": "git",
@@ -23,14 +27,17 @@
   "homepage": "https://github.com/ethereum-alarm-clock/eac.js-lib#readme",
   "devDependencies": {
     "@digix/tempo": "0.2.0",
+    "@types/node": "10.5.3",
     "chai": "4.1.2",
     "ganache-core": "2.1.2",
     "mocha": "5.1.1",
     "truffle-contract": "3.0.5",
+    "typescript": "2.9.2",
     "web3": "0.20.6"
   },
   "dependencies": {
     "bignumber.js": "5.0.0",
-    "ethereumjs-util": "5.2.0"
+    "ethereumjs-util": "5.2.0",
+    "ethereumjs-wallet": "0.6.0"
   }
 }
