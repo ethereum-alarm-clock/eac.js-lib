@@ -33,7 +33,7 @@ describe("Request Factory", () => {
 		const bounty = web3.toWei("250", "finney")
 		const requiredDeposit = web3.toWei("50", "finney")
 
-		const endowment = eacScheduler.calcEndowment(
+		const endowment = eac.Util.calcEndowment(
 			new BigNumber(callGas),
 			new BigNumber(callValue),
 			new BigNumber(gasPrice),
