@@ -1,0 +1,19 @@
+{
+    "baseScheduler": "0x6a712aa8f594bcb9fe01188f75e42632842c1cce",
+    "blockScheduler": "0x5aa597dfcd1f18f3ba6a050ca87c6614b81bf3f8",
+    "claimLib": "0x539b31ad677d5757053b5310d9860394092a8cff",
+    "executionLib": "0xcbb1f8cec5e20addfc47bb99237f2840eb4129f8",
+    "groveLib": "0x6cf2f7d7cd36bff201ec7b6b25f83a8e5545f075",
+    "iterTools": "0x1ef4614da1b6b16d58f9e8386f995b48799c0640",
+    "mathLib": "0xbecbab0fea1bf418a293e0d861be532678f16605",
+    "paymentLib": "0x5c8f22b79e8b6af2efd6e373eb50284f09cb9356",
+    "requestFactory": "0x1f65051c893eda5fe073a3deff580f2684a03151",
+    "requestLib": "0xad5b6c881182346b0b223db14db7e69066052351",
+    "requestMetaLib": "0xfe6626cdcd60eba0de4381bb22368b54ded57e9b",
+    "requestScheduleLib": "0x0073ebf14624766ae8cffec74a65681128d88f42",
+    "requestTracker": "0xd6f09c541fcd9f0738dadee79a0a70f41ec70c90",
+    "safeMath": "0x44e1d2fb567a3d0a7aec1720b257f13cda8801bf",
+    "schedulerLib": "0x60ac17bed2a884c319db06859b582419367d206a",
+    "timestampScheduler": "0x86e67c26167e9b06d78eabeafb3e5005081336d3",
+    "transactionRecorder": "0xb878bcfae96844471e4f9abc2192542509299719"
+}
