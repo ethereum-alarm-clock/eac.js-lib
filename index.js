@@ -9,7 +9,13 @@ const RequestData = require("./lib/txRequest/requestData")
 const version = require('./package.json').version;
 const contracts = require("./lib/build/ethereum-alarm-clock.json").version;
 
-module.exports = (web3) => {
+/**
+ * 
+ * @param {Web3} web3 The web3 object (required). 
+ * @param {Object} assetJSON The asset JSON object which contains the contracts names
+ * mapped to the addresses.
+ */
+module.exports = (web3, assetJSON) => {
   if (!web3) {
     return {
       Constants,
@@ -27,13 +33,23 @@ module.exports = (web3) => {
   return {
     Constants,
     requestFactory: async () => {
-      const chainName = await util.getChainName()
-      const contracts = require(`./lib/assets/${chainName}.json`)
+      let contracts;
+      if (!assetJSON) {
+        const chainName = await util.getChainName()
+        contracts = require(`./lib/assets/${chainName}.json`)
+      } else {
+        contracts = assetJSON;
+      }
       return new RequestFactory(contracts.requestFactory, web3)
     },
     scheduler: async () => {
-      const chainName = await util.getChainName()
-      const contracts = require(`./lib/assets/${chainName}.json`)
+      let contracts;
+      if (!assetJSON) {
+        const chainName = await util.getChainName()
+        contracts = require(`./lib/assets/${chainName}.json`)
+      } else {
+        contracts = assetJSON;
+      }
       return new Scheduler(
         contracts.blockScheduler,
         contracts.timestampScheduler,
