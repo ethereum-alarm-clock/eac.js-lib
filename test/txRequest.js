@@ -38,8 +38,7 @@ describe("TxRequest", () => {
 
 		scheduler.initSender({
 			from: web3.eth.defaultAccount,
-			gas: 3000000,
-			value: endowment,
+			value: endowment
 		})
 
 		const receipt = await scheduler.blockSchedule(

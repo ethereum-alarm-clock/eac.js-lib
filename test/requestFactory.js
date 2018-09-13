@@ -43,8 +43,7 @@ describe("Request Factory", () => {
 
 		eacScheduler.initSender({
 			from: web3.eth.defaultAccount,
-			gas: 3000000,
-			value: endowment,
+			value: endowment
 		})
 
 		const receipt = await eacScheduler.blockSchedule(
@@ -123,7 +122,7 @@ describe("Request Factory", () => {
 		const fee = web3.toWei("120", "finney")
 		const bounty = web3.toWei("250", "finney")
         const requiredDeposit = web3.toWei("50", "finney")
-        
+
         const addressArgs = [
             web3.eth.defaultAccount,    //owner
             "0xfffC9C61754a0C4616FC5323dC946e89Eb272302",   //fee benefactor
@@ -168,7 +167,7 @@ describe("Request Factory", () => {
         .to.equal(0)
 
         // now that we are sure it produces a positive for good parameters, let's make it fail
-        // first let's subtract from the minimum calculated endowment, in this case 
+        // first let's subtract from the minimum calculated endowment, in this case
         // the client would be trying to send less ether value than required
         const isValidFail = await requestFactory.validateRequestParams(
             addressArgs,
@@ -199,7 +198,7 @@ describe("Request Factory", () => {
         const requests = await requestFactory.getRequests()
         // Length of an address
         expect(requests[0].length).to.equal(42)
-        
+
 
         const test1 = await requestFactory.getRequestsByOwner(owner)
         expect(test1[0])
@@ -274,7 +273,7 @@ describe("Request Factory", () => {
             })
         })
         expect(res1.toNumber()).to.equal(test1)
-        
+
         const test2 = requestFactory.calcBucket(320000, 2)
         const res2 = await new Promise(resolve => {
             requestFactory.instance.getBucket(320000, 2, (err,res) => {
