@@ -3,9 +3,9 @@
 _Note: `eac.js` is operational but we're still working out the bugs. If you use it on the mainnet please first educate yourself about the possible risks._ 
 
 [![npm version](https://badge.fury.io/js/eac.js-lib.svg)](https://badge.fury.io/js/eac.js-lib)
-# eac.js-lib
-
 [![Greenkeeper badge](https://badges.greenkeeper.io/ethereum-alarm-clock/eac.js-lib.svg)](https://greenkeeper.io/)
+
+# eac.js-lib
 
 This is a part of eac.js family that includes 
 * [eac.js-lib](https://github.com/ethereum-alarm-clock/eac.js-lib)
