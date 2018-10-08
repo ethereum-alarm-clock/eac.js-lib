@@ -4,6 +4,7 @@ _Note: `eac.js` is operational but we're still working out the bugs. If you use 
 
 [![npm version](https://badge.fury.io/js/eac.js-lib.svg)](https://badge.fury.io/js/eac.js-lib)
 [![Greenkeeper badge](https://badges.greenkeeper.io/ethereum-alarm-clock/eac.js-lib.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/ethereum-alarm-clock/eac.js-lib.svg?branch=master)](https://travis-ci.org/ethereum-alarm-clock/eac.js-lib)
 
 # eac.js-lib
 
