@@ -33,7 +33,7 @@
   "dependencies": {
     "@ethereum-alarm-clock/contracts": "1.0.0-rc.2",
     "bignumber.js": "5.0.0",
-    "ethereumjs-util": "5.2.0",
     "moment": "2.22.2"
+    "ethereumjs-util": "6.0.0"
   }
 }
