@@ -1,7 +1,6 @@
 const BigNumber = require("bignumber.js")
 const expect = require("chai").expect
 const Deployer = require("../deploy")
-const { timetravel } = require('./helper/mine2')
 
 describe("TxRequest", () => {
 	let eac
@@ -91,7 +90,9 @@ describe("TxRequest", () => {
 		expect(txRequest.requiredDeposit.toString()).to.equal(requiredDeposit)
 
 		// Test the dynamic getters
-		expect(await eac.Util.getBlockNumber()).to.equal(
+		expect(
+			(new BigNumber(await eac.Util.getBlockNumber())).plus(1).toNumber()
+		).to.equal(
 			(await txRequest.now()).toNumber()
 		)
 		expect(await txRequest.beforeClaimWindow()).to.be.false
