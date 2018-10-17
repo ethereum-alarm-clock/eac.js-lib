@@ -139,8 +139,8 @@ describe("Scheduler", () => {
 		expect(winStart.toNumber()).to.be.above(now.toNumber())
 
 		const secsToWait = winStart.minus(now)
-		const { wait, waitUntilBlock } = require("@digix/tempo")(web3)
-		await wait(secsToWait.toNumber(), 1)
+		const { wait } = require("@digix/tempo")(web3)
+		await wait(secsToWait.toNumber()+1, 1)
 
 		expect(await txRequest.inExecutionWindow()).to.be.true
 
