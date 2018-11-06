@@ -2,6 +2,7 @@
 
 const Constants = require("./lib/constants")
 const RequestFactory = require("./lib/requestFactory")
+const Analytics = require("./lib/analytics")
 const Scheduler = require("./lib/scheduling")
 const TxRequest = require("./lib/txRequest")
 const Util = require("./lib/util")
@@ -30,18 +31,21 @@ module.exports = (web3, assetJSON) => {
   }
 
   const util = Util(web3)
+
+  const requestFactory = async () => {
+    let contracts;
+    if (!assetJSON) {
+      const chainName = await util.getChainName()
+      contracts = require(`./lib/assets/${chainName}.json`)
+    } else {
+      contracts = assetJSON;
+    }
+    return new RequestFactory(contracts.requestFactory, web3)
+  };
+
   return {
     Constants,
-    requestFactory: async () => {
-      let contracts;
-      if (!assetJSON) {
-        const chainName = await util.getChainName()
-        contracts = require(`./lib/assets/${chainName}.json`)
-      } else {
-        contracts = assetJSON;
-      }
-      return new RequestFactory(contracts.requestFactory, web3)
-    },
+    requestFactory,
     scheduler: async () => {
       let contracts;
       if (!assetJSON) {
@@ -59,6 +63,7 @@ module.exports = (web3, assetJSON) => {
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
     RequestData,
+    Analytics: new Analytics(requestFactory),
     version,
     contracts
   }
