@@ -43,27 +43,29 @@ module.exports = (web3, assetJSON) => {
     return new RequestFactory(contracts.requestFactory, web3)
   };
 
+  const scheduler = async () => {
+    let contracts;
+    if (!assetJSON) {
+      const chainName = await util.getChainName()
+      contracts = require(`./lib/assets/${chainName}.json`)
+    } else {
+      contracts = assetJSON;
+    }
+    return new Scheduler(
+      contracts.blockScheduler,
+      contracts.timestampScheduler,
+      web3
+    )
+  };
+
   return {
     Constants,
     requestFactory,
-    scheduler: async () => {
-      let contracts;
-      if (!assetJSON) {
-        const chainName = await util.getChainName()
-        contracts = require(`./lib/assets/${chainName}.json`)
-      } else {
-        contracts = assetJSON;
-      }
-      return new Scheduler(
-        contracts.blockScheduler,
-        contracts.timestampScheduler,
-        web3
-      )
-    },
+    scheduler,
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
     RequestData,
-    Analytics: new Analytics(requestFactory, web3),
+    Analytics: new Analytics(web3, scheduler, requestFactory),
     version,
     contracts
   }
