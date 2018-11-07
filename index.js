@@ -63,7 +63,7 @@ module.exports = (web3, assetJSON) => {
     transactionRequest: address => new TxRequest(address, web3),
     Util: util,
     RequestData,
-    Analytics: new Analytics(requestFactory),
+    Analytics: new Analytics(requestFactory, web3),
     version,
     contracts
   }
