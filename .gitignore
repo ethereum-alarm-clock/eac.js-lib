@@ -6,5 +6,4 @@ lib/assets/tester.json
 lib/assets/development.json
 lib/build/contracts
 script.js
-build/
 build
