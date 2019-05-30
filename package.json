@@ -25,10 +25,10 @@
     "@digix/tempo": "0.2.0",
     "chai": "4.1.2",
     "ethereumjs-wallet": "0.6.2",
-    "ganache-core": "2.2.1",
+    "ganache-core": "2.5.5",
     "mocha": "5.1.1",
     "truffle-contract": "3.0.6",
-    "web3": "0.20.6"
+    "web3": "0.20.7"
   },
   "dependencies": {
     "@ethereum-alarm-clock/contracts": "1.0.0-rc.2",
